@@ -33,6 +33,10 @@ trait UserApi extends HttpService {
           pathEnd {
             get {
               complete(User("jan", "jan123"))
+            } ~ put {
+              entity(as[User]) { user =>
+                complete(user)
+              }
             }
           }
         }
