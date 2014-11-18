@@ -1,6 +1,6 @@
 package com.jamapp.rest
 
-import akka.actor.{Actor, ActorRefFactory}
+import akka.actor.{ActorSystem, Actor, ActorRefFactory}
 import com.jamapp.rest.user.UserApi
 import spray.http.MediaTypes._
 import spray.routing._
@@ -17,6 +17,9 @@ class ApiActor extends Actor with Api {
 
 }
 
+object Api {
+  val actorSystem = ActorSystem("restActorSystem")
+}
 
 trait Api extends HttpService with UserApi {
   val routing = userRoute
