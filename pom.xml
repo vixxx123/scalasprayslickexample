@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.jammapp</groupId>
-    <artifactId>com.jammapp</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>com.vixxx123</groupId>
+    <artifactId>com.vixxx123</artifactId>
+    <version>0.1-SNAPSHOT</version>
 
     <properties>
         <scala.maven.plugin.version>3.2.0</scala.maven.plugin.version>

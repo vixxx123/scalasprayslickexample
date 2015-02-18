@@ -1,7 +1,7 @@
-package com.jamapp.rest
+package com.vixxx123.rest
 
 import akka.actor.{ActorSystem, Actor, ActorRefFactory}
-import com.jamapp.rest.user.UserApi
+import com.vixxx123.rest.user.UserApi
 import spray.http.MediaTypes._
 import spray.routing._
 import spray.http._

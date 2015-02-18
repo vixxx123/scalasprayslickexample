@@ -1,8 +1,8 @@
-package com.jamapp.rest.user
+package com.vixxx123.rest.user
 
 import akka.actor.{Props, ActorSystem}
 import akka.routing.RoundRobinPool
-import com.jamapp.rest.Api
+import com.vixxx123.rest.Api
 import spray.json.DefaultJsonProtocol
 import spray.routing.HttpService
 import spray.httpx.SprayJsonSupport._
@@ -16,7 +16,10 @@ case class User(name: String, login: String)
 
 trait UserApi extends HttpService {
 
-  val userCreateHandler = Api.actorSystem.actorOf(RoundRobinPool(20).props(Props[UserCreateActor]), "userCreateRouter")
+  val userCreateHandler = Api.actorSystem.actorOf(RoundRobinPool(2).props(Props[UserCreateActor]), "userCreateRouter")
+  val userPutHandler = Api.actorSystem.actorOf(RoundRobinPool(5).props(Props[UserPutActor]), "userCreateRouter")
+
+  val userGetHandler = Api.actorSystem.actorOf(RoundRobinPool(20).props(Props[UserGetActor]), "userCreateRouter")
 
   implicit val PersonFormat = jsonFormat2(User)
 
@@ -38,10 +41,10 @@ trait UserApi extends HttpService {
         userId => {
           pathEnd {
             get {
-              complete(User("jan", "jan123"))
+              ctx => userGetHandler ! GetMessage(ctx)
             } ~ put {
               entity(as[User]) { user =>
-                complete(user)
+                ctx => userPutHandler ! PutMessage(ctx, user)
               }
             }
           }
