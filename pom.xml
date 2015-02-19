@@ -11,7 +11,7 @@
     <properties>
         <scala.maven.plugin.version>3.2.0</scala.maven.plugin.version>
         <scala.version.major>2.11</scala.version.major>
-        <scala.version>${scala.version.major}.4</scala.version>
+        <scala.version>${scala.version.major}.5</scala.version>
         <akka.version>2.3.7</akka.version>
     </properties>
 
@@ -80,11 +80,31 @@
         </dependency>
 
         <dependency>
+            <groupId>com.typesafe.slick</groupId>
+            <artifactId>slick_${scala.version.major}</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_${scala.version.major}</artifactId>
             <version>2.2.1</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.34</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -108,6 +128,7 @@
                         <jvmArg>-Xms64m</jvmArg>
                         <jvmArg>-Xmx1024m</jvmArg>
                     </jvmArgs>
+                    <scalaVersion>${scala.version}</scalaVersion>
                 </configuration>
                 <executions>
                     <execution>

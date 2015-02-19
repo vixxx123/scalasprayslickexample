@@ -5,6 +5,7 @@ import com.vixxx123.rest.user.UserApi
 import spray.http.MediaTypes._
 import spray.routing._
 import spray.http._
+import scala.slick.driver.MySQLDriver.simple._
 
 /**
  * Created by wiktort on 2014-11-13.

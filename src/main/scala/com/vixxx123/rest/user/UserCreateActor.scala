@@ -1,25 +1,23 @@
 package com.vixxx123.rest.user
 
 import akka.actor.Actor
-import akka.actor.Actor.Receive
-import spray.routing.{Directives, RequestContext}
+import com.vixxx123.rest.configuration.DatabaseAccess
+import spray.routing.RequestContext
 import spray.httpx.SprayJsonSupport._
-import spray.json.DefaultJsonProtocol._
-
-/**
- * Created by Wiktor Tychulski on 2014-11-18.
- */
+import scala.slick.driver.MySQLDriver.simple._
 
 case class CreateMessage(ctx: RequestContext, user: User)
 
-class UserCreateActor extends Actor {
-
-  implicit val PersonFormat = jsonFormat2(User)
+class UserCreateActor extends Actor with DatabaseAccess{
 
   override def receive: Receive = {
     case CreateMessage(ctx, user) =>
 
-        ctx.complete(user)
-
+      val localCtx = ctx
+      databasePool withSession {
+        implicit session =>
+          val resId = UsersIdReturning += user
+          localCtx.complete(user.copy(id = Some(resId.asInstanceOf[Int])))
+      }
   }
 }
