@@ -11,6 +11,7 @@ trait UserApi extends HttpService {
   val userCreateHandler = Api.actorSystem.actorOf(RoundRobinPool(2).props(Props[UserCreateActor]), "userCreateRouter")
   val userPutHandler = Api.actorSystem.actorOf(RoundRobinPool(5).props(Props[UserPutActor]), "userPutRouter")
   val userGetHandler = Api.actorSystem.actorOf(RoundRobinPool(20).props(Props[UserGetActor]), "userGetRouter")
+  val userDeleteHandler = Api.actorSystem.actorOf(RoundRobinPool(20).props(Props[UserDeleteActor]), "userDeleteRouter")
 
   val userRoute =
     pathPrefix("user") {
@@ -32,8 +33,10 @@ trait UserApi extends HttpService {
               ctx => userGetHandler ! GetMessage(ctx, Some(userId))
             } ~ put {
               entity(as[User]) { user =>
-                ctx => userPutHandler ! PutMessage(ctx, user)
+                ctx => userPutHandler ! PutMessage(ctx, user.copy(id = Some(userId)))
               }
+            } ~ delete {
+              ctx => userDeleteHandler ! DeleteMessage(ctx, userId)
             }
           }
         }

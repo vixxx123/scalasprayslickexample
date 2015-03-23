@@ -1,25 +1,41 @@
 package com.vixxx123.rest
 
-import akka.actor.{ActorSystem, Actor, ActorRefFactory}
+import akka.actor._
+import com.vixxx123.rest.internal.logging.{Logging, ConsoleLogger, Logger}
 import com.vixxx123.rest.user.UserApi
-import spray.http.MediaTypes._
+
 import spray.routing._
-import spray.http._
-import scala.slick.driver.MySQLDriver.simple._
+import spray.util.LoggingContext
 
-/**
- * Created by wiktort on 2014-11-13.
- */
-class ApiActor extends Actor with Api {
+class ApiActor extends Actor with Api with Logging {
 
-  override implicit def actorRefFactory = context
+  override val logTag: String = getClass.getName
 
-  override def receive = runRoute(routing)
+  override implicit def actorRefFactory: ActorContext = context
+
+  implicit def myExceptionHandler(implicit log: LoggingContext): ExceptionHandler = ExceptionHandler {
+
+    case e: RestException =>
+      ctx => {
+        L.debug(s"Cannot respond - error: ${e.getMessage}, to request: $ctx")
+        ctx.complete(e.code, e.getMessage)
+      }
+
+    case e: Exception =>
+      ctx => {
+        L.error("Unhandled exception: " + e.getMessage)
+        ctx.complete(500, e.getMessage)
+      }
+  }
+
+  override def receive = runRoute(handleExceptions(myExceptionHandler){routing})
+
 
 }
 
 object Api {
   val actorSystem = ActorSystem("restActorSystem")
+  actorSystem.actorOf(Props(classOf[Logger], List(new ConsoleLogger)), Logger.LoggerActorName)
 }
 
 trait Api extends HttpService with UserApi {

@@ -1,4 +1,4 @@
-package com.vixxx123.rest.configuration
+package com.vixxx123.rest.internal.configuration
 
 import scala.slick.driver.MySQLDriver.simple._
 import com.mchange.v2.c3p0.ComboPooledDataSource

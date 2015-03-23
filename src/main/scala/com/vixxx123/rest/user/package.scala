@@ -19,6 +19,8 @@ package object user {
 
   implicit val PersonFormat = jsonFormat3(User)
 
+  implicit val DeleteFormat = jsonFormat1(DeleteResult)
+
   val Users: TableQuery[UserT] = TableQuery[UserT]
 
   val UsersIdReturning = Users returning Users.map{_.id}
