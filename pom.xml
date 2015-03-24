@@ -13,6 +13,7 @@
         <scala.version.major>2.11</scala.version.major>
         <scala.version>${scala.version.major}.5</scala.version>
         <akka.version>2.3.7</akka.version>
+        <jackson.version>2.5.1</jackson.version>
     </properties>
 
     <repositories>
@@ -97,7 +98,22 @@
             <version>2.2.1</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-scala_${scala.version.major}</artifactId>
+            <version>${jackson.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
