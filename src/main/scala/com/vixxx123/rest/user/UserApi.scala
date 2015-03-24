@@ -37,6 +37,10 @@ trait UserApi extends HttpService {
               }
             } ~ delete {
               ctx => userDeleteHandler ! DeleteMessage(ctx, userId)
+            } ~ patch {
+              entity(as[Map[String, Any]])
+              ctx =>
+                ctx => userPutHandler ! PatchMessage(ctx, userId)
             }
           }
         }
