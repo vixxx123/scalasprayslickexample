@@ -15,7 +15,7 @@ class UserDeleteActor extends Actor with DatabaseAccess {
   override def receive: Receive = {
     case DeleteMessage(ctx, userId) =>
       val localCtx = ctx
-      databasePool withSession {
+      connectionPool withSession {
         implicit session =>
           val deleted = Users.filter(_.id === userId).delete
           localCtx.complete(DeleteResult(deleted == 1))

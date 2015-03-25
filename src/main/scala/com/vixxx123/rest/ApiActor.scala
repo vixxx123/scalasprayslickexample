@@ -13,23 +13,7 @@ class ApiActor extends Actor with Api with Logging {
 
   override implicit def actorRefFactory: ActorContext = context
 
-  implicit def myExceptionHandler(implicit log: LoggingContext): ExceptionHandler = ExceptionHandler {
-
-    case e: RestException =>
-      ctx => {
-        L.debug(s"Cannot respond - error: ${e.getMessage}, to request: $ctx")
-        ctx.complete(e.code, e.getMessage)
-      }
-
-    case e: Exception =>
-      ctx => {
-        L.error("Unhandled exception: " + e.getMessage)
-        ctx.complete(500, e.getMessage)
-      }
-  }
-
-  override def receive = runRoute(handleExceptions(myExceptionHandler){routing})
-
+  override def receive = runRoute(handleExceptions(new RestExceptionHandler().exceptionHandler){routing})
 
 }
 

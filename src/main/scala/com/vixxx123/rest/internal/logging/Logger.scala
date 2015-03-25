@@ -50,12 +50,12 @@ trait Logging {
       logger ! Info(msg, logTag)
     }
 
-    def error(msg: String, cause: Throwable = null, stack: Array[StackTraceElement] = null) = {
-      logger ! Error(msg, logTag, cause, stack)
+    def error(msg: String, e: Exception) = {
+      logger ! Error(msg, logTag, e.getCause, e.getStackTrace)
     }
 
-    def error(msg: String, logTag: String, cause: Throwable, stack: Array[StackTraceElement]) = {
-      logger ! Error(msg, logTag, cause, stack)
+    def error(msg: String, logTag: String, e: Exception) = {
+      logger ! Error(msg, logTag, e.getCause, e.getStackTrace)
     }
   }
 }
@@ -73,8 +73,12 @@ class ConsoleLogger extends LoggerHandler {
   }
 
   override def error(msg: String, tag: String, cause: Throwable, stack: Array[StackTraceElement]): Unit = {
-    println(s"ERROR | $tag | $msg")
-    println(s"ERROR | $tag | $stack")
+    println(s"ERROR | $tag | MSG   | $msg")
+    println(s"ERROR | $tag | CAUSE | $cause")
+    stack.foreach {
+      stackElement =>
+        println(s"ERROR | $tag | STACK | $stackElement")
+    }
   }
 
   override def info(msg: String, tag: String): Unit = {

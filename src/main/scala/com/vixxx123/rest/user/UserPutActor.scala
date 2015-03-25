@@ -21,7 +21,7 @@ class UserPutActor extends Actor with DatabaseAccess {
   override def receive: Receive = {
     case PutMessage(ctx, user) =>
       val localCtx = ctx
-      databasePool withSession {
+      connectionPool withSession {
         implicit session =>
           val updated = Users.filter(_.id === user.id).update(user)
           if (updated == 1) {
@@ -33,13 +33,10 @@ class UserPutActor extends Actor with DatabaseAccess {
 
     case PatchMessage(ctx, userId) =>
       val localCtx = ctx
-
       val updateStatement = SqlUtil.patch2updateStatement("user", ctx.request.message.entity.asString)
 
-
-      databasePool withSession {
+      connectionPool withSession {
         implicit session =>
-          Q.updateNA("")
           val updated = Q.updateNA(updateStatement + " " + SqlUtil.whereById(userId))
           if (updated.first == 1) {
             localCtx.complete(Users.filter(_.id === userId).firstOption)

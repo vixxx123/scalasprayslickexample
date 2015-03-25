@@ -17,7 +17,7 @@ package object user {
       (User.apply _).tupled, User.unapply)
   }
 
-  implicit val PersonFormat = jsonFormat3(User)
+  implicit val UserFormat = jsonFormat3(User)
 
   implicit val DeleteFormat = jsonFormat1(DeleteResult)
 

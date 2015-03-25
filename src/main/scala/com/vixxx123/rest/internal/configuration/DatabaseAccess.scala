@@ -4,11 +4,14 @@ import scala.slick.driver.MySQLDriver.simple._
 import com.mchange.v2.c3p0.ComboPooledDataSource
 
 trait DatabaseAccess {
+  val connectionPool = DatabaseAccess.DatabasePool
+}
+
+object DatabaseAccess {
   val Url = "jdbc:mysql://localhost:3306/rest"
   val Driver = "com.mysql.jdbc.Driver"
-//  val database = Database.forURL(Url, driver = Driver, user = "rest", password = "CoMModore64")
 
-  val databasePool = {
+  val DatabasePool = {
     val ds = new ComboPooledDataSource
     ds.setDriverClass(Driver)
     ds.setJdbcUrl(Url)

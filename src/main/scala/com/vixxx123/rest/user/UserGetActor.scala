@@ -19,7 +19,7 @@ class UserGetActor extends Actor with DatabaseAccess with Logging {
     case GetMessage(ctx, None) =>
       L.info("Getting all users")
       val localCtx = ctx
-      databasePool withSession {
+      connectionPool withSession {
         implicit session =>
           localCtx.complete(Users.list)
       }
@@ -27,7 +27,7 @@ class UserGetActor extends Actor with DatabaseAccess with Logging {
     case GetMessage(ctx, Some(userId)) =>
       L.info(s"Getting user id = $userId")
       val localCtx = ctx
-      databasePool withSession {
+      connectionPool withSession {
         implicit session =>
           localCtx.complete(Users.filter(_.id === userId).firstOption)
 
