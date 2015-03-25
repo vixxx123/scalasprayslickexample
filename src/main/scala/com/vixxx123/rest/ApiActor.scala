@@ -23,5 +23,10 @@ object Api {
 }
 
 trait Api extends HttpService with UserApi {
+  init()
   val routing = userRoute
+}
+
+trait BaseResourceApi {
+  def init(): Unit = {}
 }

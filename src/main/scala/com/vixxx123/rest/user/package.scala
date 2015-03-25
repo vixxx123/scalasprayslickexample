@@ -6,9 +6,11 @@ import scala.slick.driver.MySQLDriver.simple._
 
 package object user {
 
+  val TableName = "user"
+
   case class User(id: Option[Int] = None, name: String, login: String)
 
-  class UserT(tag: Tag) extends Table[User](tag, "user") {
+  class UserT(tag: Tag) extends Table[User](tag, TableName) {
     def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
     def name: Column[String] = column[String]("name")
     def login: Column[String] = column[String]("login")

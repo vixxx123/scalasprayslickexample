@@ -2,16 +2,30 @@ package com.vixxx123.rest.user
 
 import akka.actor.Props
 import akka.routing.RoundRobinPool
-import com.vixxx123.rest.Api
+import com.vixxx123.rest.internal.configuration.DatabaseAccess
+import com.vixxx123.rest.{BaseResourceApi, Api}
 import spray.routing.HttpService
 import spray.httpx.SprayJsonSupport._
+import scala.slick.driver.MySQLDriver.simple._
 
-trait UserApi extends HttpService {
+import scala.slick.jdbc.meta.MTable
+
+trait UserApi extends HttpService with BaseResourceApi with DatabaseAccess {
 
   val userCreateHandler = Api.actorSystem.actorOf(RoundRobinPool(2).props(Props[UserCreateActor]), "userCreateRouter")
   val userPutHandler = Api.actorSystem.actorOf(RoundRobinPool(5).props(Props[UserPutActor]), "userPutRouter")
   val userGetHandler = Api.actorSystem.actorOf(RoundRobinPool(20).props(Props[UserGetActor]), "userGetRouter")
   val userDeleteHandler = Api.actorSystem.actorOf(RoundRobinPool(20).props(Props[UserDeleteActor]), "userDeleteRouter")
+
+
+  override def init() = {
+    connectionPool withSession {
+      implicit session =>
+        if (MTable.getTables(TableName).list.isEmpty) {
+          Users.ddl.create
+        }
+    }
+  }
 
   val userRoute =
     pathPrefix("user") {
