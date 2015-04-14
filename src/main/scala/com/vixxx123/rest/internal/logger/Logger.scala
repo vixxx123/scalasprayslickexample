@@ -1,6 +1,6 @@
 package com.vixxx123.rest.internal.logger
 
-import akka.actor.{ActorSystem, Actor}
+import akka.actor.{Props, ActorSystem, Actor}
 import com.vixxx123.rest.Api
 
 class Logger(handler: List[BaseLogger]) extends Actor {
@@ -24,6 +24,8 @@ class Logger(handler: List[BaseLogger]) extends Actor {
 object Logger {
   val LoggingActorSystem = ActorSystem("loggingActorSystem")
   val LoggerActorName = "Logger-Actor"
+
+  def props(handlers: List[BaseLogger]) = Props(classOf[Logger], handlers)
 }
 
 sealed trait LogType

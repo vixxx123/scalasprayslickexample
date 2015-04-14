@@ -10,17 +10,15 @@ import akka.pattern.ask
 /**
  * Created by Wiktor Tychulski on 2014-11-16.
  */
-
-
 object Rest extends App {
   // we need an ActorSystem to host our application in
   implicit val system = ActorSystem("on-spray-can")
 
   // start up logger actor system and logger actor
-  Logger.LoggingActorSystem.actorOf(Props(classOf[Logger], List(new ConsoleLogger)), Logger.LoggerActorName)
+  Logger.LoggingActorSystem.actorOf(Logger.props(List(new ConsoleLogger)), Logger.LoggerActorName)
 
   // start up API service actor
-  val service = system.actorOf(Props[ApiService], "example-rest-service")
+  val service = system.actorOf(ApiService.props(), ApiService.ActorName)
 
   implicit val timeout = Timeout(5.seconds)
   // start a new HTTP server on port 8080 with our service actor as the handler

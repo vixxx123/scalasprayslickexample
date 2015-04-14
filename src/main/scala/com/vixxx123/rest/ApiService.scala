@@ -20,6 +20,12 @@ class ApiService extends Actor with Api with Logging {
 
 }
 
+object ApiService {
+  val ActorName = "api-root"
+
+  def props() = Props(classOf[ApiService])
+}
+
 
 trait Api extends HttpService with PersonApi {
   init()
