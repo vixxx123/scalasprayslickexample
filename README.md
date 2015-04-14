@@ -1,29 +1,21 @@
-# README #
+# Welcome to rest scala/spray/akka/slick/mysql example #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+I have created this project during my research on scala/spray/akka/slick/mysql REST service.
 
-### What is this repository for? ###
+It may be used to learn a bit on how to use those technologies to create REST service.
+It's just a prove of concept though and it's not production ready. It definitely can be used as a good start.
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+The database underneath is mysql, but it can be easily switch to any other which is supported by slick.
 
-### How do I get set up? ###
+### System requirements ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* Mysql server - up and running
+* MySQL Connector/J is installed (jdbc driver for mysql) http://dev.mysql.com/downloads/connector/j/
+* Java with maven is installed
 
-### Contribution guidelines ###
+### Configuration ###
 
-* Writing tests
-* Code review
-* Other guidelines
+* Set up user and database on mysql server
+* Edit db.conf in resources to configure db connection
 
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+### Have fun ###
