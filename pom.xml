@@ -14,6 +14,13 @@
         <scala.version>${scala.version.major}.5</scala.version>
         <akka.version>2.3.7</akka.version>
         <jackson.version>2.5.1</jackson.version>
+        <mysql.version>5.1.34</mysql.version>
+        <slick.version>2.1.0</slick.version>
+        <spray.version>1.3.3</spray.version>
+        <spray.json.version>1.3.1</spray.json.version>
+        <c3p0.version>0.9.1.2</c3p0.version>
+        <scalatest.verion>2.2.1</scalatest.verion>
+        <typesafe.config.version>1.2.1</typesafe.config.version>
     </properties>
 
     <repositories>
@@ -32,13 +39,9 @@
             <name>spray-repo</name>
             <url>http://repo.spray.io</url>
         </repository>
-
     </repositories>
 
-
     <dependencies>
-
-
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
@@ -59,45 +62,39 @@
         <dependency>
             <groupId>io.spray</groupId>
             <artifactId>spray-can_${scala.version.major}</artifactId>
-            <version>1.3.2</version>
+            <version>${spray.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.spray</groupId>
             <artifactId>spray-httpx_${scala.version.major}</artifactId>
-            <version>1.3.2</version>
+            <version>${spray.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.spray</groupId>
             <artifactId>spray-json_${scala.version.major}</artifactId>
-            <version>1.3.1</version>
+            <version>${spray.json.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.spray</groupId>
             <artifactId>spray-routing_${scala.version.major}</artifactId>
-            <version>1.3.2</version>
+            <version>${spray.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.typesafe.slick</groupId>
             <artifactId>slick_${scala.version.major}</artifactId>
-            <version>2.1.0</version>
+            <version>${slick.version}</version>
         </dependency>
 
         <dependency>
             <groupId>c3p0</groupId>
             <artifactId>c3p0</artifactId>
-            <version>0.9.1.2</version>
+            <version>${c3p0.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_${scala.version.major}</artifactId>
-            <version>2.2.1</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -107,19 +104,25 @@
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-scala_${scala.version.major}</artifactId>
             <version>${jackson.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.scala-lang</groupId>
-                    <artifactId>scala-library</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>${typesafe.config.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.34</version>
+            <version>${mysql.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_${scala.version.major}</artifactId>
+            <version>${scalatest.verion}</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 

@@ -1,14 +1,14 @@
-package com.vixxx123.rest.user
+package com.vixxx123.rest.person
 
 import akka.actor.Actor
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
 import com.vixxx123.rest.internal.configuration.DatabaseAccess
-import com.vixxx123.rest.internal.logging.Logging
+import com.vixxx123.rest.internal.logger.Logging
 import spray.routing.RequestContext
 import spray.httpx.SprayJsonSupport._
 import scala.slick.driver.MySQLDriver.simple._
 
-case class CreateMessage(ctx: RequestContext, user: User)
+case class CreateMessage(ctx: RequestContext, user: Person)
 
 class UserCreateActor extends Actor with DatabaseAccess with Logging {
 
@@ -25,9 +25,6 @@ class UserCreateActor extends Actor with DatabaseAccess with Logging {
             localCtx.complete(user.copy(id = Some(resId.asInstanceOf[Int])))
             L.debug(s"User create success")
           } catch {
-            case e: MySQLIntegrityConstraintViolationException =>
-              L.info(s"Login already exists, ${user.login}")
-              localCtx.complete(new UserAlreadyExists(s"Login is already taken - ${user.login}"))
             case e: Exception =>
               L.error(s"Ups cannot create user: ${e.getMessage}", e)
               localCtx.complete(e)

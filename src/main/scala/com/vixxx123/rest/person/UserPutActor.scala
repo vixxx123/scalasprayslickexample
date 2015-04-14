@@ -1,4 +1,4 @@
-package com.vixxx123.rest.user
+package com.vixxx123.rest.person
 
 import akka.actor.Actor
 import com.vixxx123.rest.EntityNotFound
@@ -11,7 +11,7 @@ import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
 
-case class PutMessage(ctx: RequestContext, user: User)
+case class PutMessage(ctx: RequestContext, user: Person)
 case class PatchMessage(ctx: RequestContext, userId: Int)
 
 class UserPutActor extends Actor with DatabaseAccess {
@@ -27,7 +27,7 @@ class UserPutActor extends Actor with DatabaseAccess {
           if (updated == 1) {
             localCtx.complete(user)
           } else {
-            localCtx.complete(EntityNotFound("Not found user id " + user.id))
+            localCtx.complete(EntityNotFound(s"Not found user id ${user.id}"))
           }
       }
 
@@ -37,11 +37,11 @@ class UserPutActor extends Actor with DatabaseAccess {
 
       connectionPool withSession {
         implicit session =>
-          val updated = Q.updateNA(updateStatement + " " + SqlUtil.whereById(userId))
+          val updated = Q.updateNA(s"$updateStatement  ${SqlUtil.whereById(userId)}")
           if (updated.first == 1) {
             localCtx.complete(Users.filter(_.id === userId).firstOption)
           } else {
-            localCtx.complete(EntityNotFound("Not found user id " + userId))
+            localCtx.complete(EntityNotFound(s"Not found user id $userId"))
           }
       }
   }

@@ -1,4 +1,4 @@
-package com.vixxx123.rest.user
+package com.vixxx123.rest.person
 
 import akka.actor.Props
 import akka.routing.RoundRobinPool
@@ -12,10 +12,10 @@ import scala.slick.jdbc.meta.MTable
 
 trait UserApi extends HttpService with BaseResourceApi with DatabaseAccess {
 
-  val userCreateHandler = Api.actorSystem.actorOf(RoundRobinPool(2).props(Props[UserCreateActor]), "userCreateRouter")
-  val userPutHandler = Api.actorSystem.actorOf(RoundRobinPool(5).props(Props[UserPutActor]), "userPutRouter")
-  val userGetHandler = Api.actorSystem.actorOf(RoundRobinPool(20).props(Props[UserGetActor]), "userGetRouter")
-  val userDeleteHandler = Api.actorSystem.actorOf(RoundRobinPool(20).props(Props[UserDeleteActor]), "userDeleteRouter")
+  val userCreateHandler = actorRefFactory.actorOf(RoundRobinPool(2).props(Props[UserCreateActor]), "userCreateRouter")
+  val userPutHandler = actorRefFactory.actorOf(RoundRobinPool(5).props(Props[UserPutActor]), "userPutRouter")
+  val userGetHandler = actorRefFactory.actorOf(RoundRobinPool(20).props(Props[UserGetActor]), "userGetRouter")
+  val userDeleteHandler = actorRefFactory.actorOf(RoundRobinPool(20).props(Props[UserDeleteActor]), "userDeleteRouter")
 
 
   override def init() = {
@@ -28,13 +28,13 @@ trait UserApi extends HttpService with BaseResourceApi with DatabaseAccess {
   }
 
   val userRoute =
-    pathPrefix("user") {
+    pathPrefix("person") {
       pathEnd {
         get {
           ctx => userGetHandler ! GetMessage(ctx, None)
         } ~
         post {
-          entity(as[User]) {
+          entity(as[Person]) {
             user =>
               ctx => userCreateHandler ! CreateMessage(ctx, user)
           }
@@ -46,7 +46,7 @@ trait UserApi extends HttpService with BaseResourceApi with DatabaseAccess {
             get {
               ctx => userGetHandler ! GetMessage(ctx, Some(userId))
             } ~ put {
-              entity(as[User]) { user =>
+              entity(as[Person]) { user =>
                 ctx => userPutHandler ! PutMessage(ctx, user.copy(id = Some(userId)))
               }
             } ~ delete {

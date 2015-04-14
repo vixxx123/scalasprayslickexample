@@ -1,22 +1,27 @@
 package com.vixxx123.rest.internal.configuration
 
+import com.typesafe.config.ConfigFactory
+
 import scala.slick.driver.MySQLDriver.simple._
 import com.mchange.v2.c3p0.ComboPooledDataSource
 
+/**
+ * Database connection pool trait / mix it wherever db access is needed
+ */
 trait DatabaseAccess {
   val connectionPool = DatabaseAccess.DatabasePool
 }
 
-object DatabaseAccess {
-  val Url = "jdbc:mysql://localhost:3306/rest"
+private object DatabaseAccess {
   val Driver = "com.mysql.jdbc.Driver"
 
   val DatabasePool = {
+    val conf = ConfigFactory.load()
     val ds = new ComboPooledDataSource
     ds.setDriverClass(Driver)
-    ds.setJdbcUrl(Url)
-    ds.setUser("rest")
-    ds.setPassword("CoMModore64")
+    ds.setJdbcUrl(conf.getString("db.dbUri"))
+    ds.setUser(conf.getString("db.user"))
+    ds.setPassword(conf.getString("db.password"))
     ds.setMinPoolSize(20)
     ds.setAcquireIncrement(5)
     ds.setMaxPoolSize(100)

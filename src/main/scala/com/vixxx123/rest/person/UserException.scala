@@ -1,4 +1,4 @@
-package com.vixxx123.rest.user
+package com.vixxx123.rest.person
 
 import com.vixxx123.rest.RestException
 import spray.http.StatusCodes

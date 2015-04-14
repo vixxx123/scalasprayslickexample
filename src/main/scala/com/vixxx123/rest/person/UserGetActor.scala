@@ -1,8 +1,8 @@
-package com.vixxx123.rest.user
+package com.vixxx123.rest.person
 
 import akka.actor.Actor
 import com.vixxx123.rest.internal.configuration.DatabaseAccess
-import com.vixxx123.rest.internal.logging.Logging
+import com.vixxx123.rest.internal.logger.Logging
 import spray.routing.RequestContext
 import spray.httpx.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
