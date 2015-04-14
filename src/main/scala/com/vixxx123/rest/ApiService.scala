@@ -2,11 +2,14 @@ package com.vixxx123.rest
 
 import akka.actor._
 import com.vixxx123.rest.internal.logger.{Logging, ConsoleLogger, Logger}
-import com.vixxx123.rest.person.UserApi
+import com.vixxx123.rest.person.PersonApi
 
 import spray.routing._
 import spray.util.LoggingContext
 
+/**
+ * Main Api service class
+ */
 class ApiService extends Actor with Api with Logging {
 
   override val logTag: String = getClass.getName
@@ -17,7 +20,8 @@ class ApiService extends Actor with Api with Logging {
 
 }
 
-trait Api extends HttpService with UserApi {
+
+trait Api extends HttpService with PersonApi {
   init()
   val routing = userRoute
 }

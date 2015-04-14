@@ -8,21 +8,24 @@ import spray.routing.RequestContext
 import spray.httpx.SprayJsonSupport._
 import scala.slick.driver.MySQLDriver.simple._
 
-case class CreateMessage(ctx: RequestContext, user: Person)
+case class CreateMessage(ctx: RequestContext, person: Person)
 
-class UserCreateActor extends Actor with DatabaseAccess with Logging {
+/**
+ * Actor handling person create message
+ */
+class PersonCreateActor extends Actor with DatabaseAccess with Logging {
 
   override val logTag = getClass.getName
 
   override def receive: Receive = {
-    case CreateMessage(ctx, user) =>
+    case CreateMessage(ctx, person) =>
 
       val localCtx = ctx
       connectionPool withSession {
         implicit session =>
           try {
-            val resId = UsersIdReturning += user
-            localCtx.complete(user.copy(id = Some(resId.asInstanceOf[Int])))
+            val resId = PersonsIdReturning += person
+            localCtx.complete(person.copy(id = Some(resId.asInstanceOf[Int])))
             L.debug(s"User create success")
           } catch {
             case e: Exception =>

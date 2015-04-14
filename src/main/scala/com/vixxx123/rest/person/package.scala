@@ -10,7 +10,7 @@ package object person {
 
   case class Person(id: Option[Int] = None, name: String, lastname: String)
 
-  class UserT(tag: Tag) extends Table[Person](tag, TableName) {
+  class PersonT(tag: Tag) extends Table[Person](tag, TableName) {
     def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
     def name: Column[String] = column[String]("name")
     def lastname: Column[String] = column[String]("lastname")
@@ -23,7 +23,7 @@ package object person {
 
   implicit val DeleteFormat = jsonFormat1(DeleteResult)
 
-  val Users: TableQuery[UserT] = TableQuery[UserT]
+  val Persons: TableQuery[PersonT] = TableQuery[PersonT]
 
-  val UsersIdReturning = Users returning Users.map{_.id}
+  val PersonsIdReturning = Persons returning Persons.map{_.id}
 }

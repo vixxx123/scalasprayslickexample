@@ -6,18 +6,21 @@ import spray.routing.RequestContext
 import spray.httpx.SprayJsonSupport._
 import scala.slick.driver.MySQLDriver.simple._
 
-case class DeleteMessage(ctx: RequestContext, userId: Int)
+case class DeleteMessage(ctx: RequestContext, personId: Int)
 
 case class DeleteResult(deleted: Boolean)
 
-class UserDeleteActor extends Actor with DatabaseAccess {
+/**
+ * Actor handling delete message
+ */
+class PersonDeleteActor extends Actor with DatabaseAccess {
 
   override def receive: Receive = {
-    case DeleteMessage(ctx, userId) =>
+    case DeleteMessage(ctx, personId) =>
       val localCtx = ctx
       connectionPool withSession {
         implicit session =>
-          val deleted = Users.filter(_.id === userId).delete
+          val deleted = Persons.filter(_.id === personId).delete
           localCtx.complete(DeleteResult(deleted == 1))
       }
 

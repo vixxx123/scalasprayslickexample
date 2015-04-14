@@ -10,26 +10,31 @@ import scala.slick.driver.MySQLDriver.simple._
 
 case class GetMessage(ctx: RequestContext, userId: Option[Int])
 
-class UserGetActor extends Actor with DatabaseAccess with Logging {
+/**
+ * Actor handling person get message
+ */
+class PersonGetActor extends Actor with DatabaseAccess with Logging {
 
   override val logTag: String = getClass.getName
 
   override def receive: Receive = {
 
+    // get all persons
     case GetMessage(ctx, None) =>
-      L.info("Getting all users")
+      L.info("Getting all persons")
       val localCtx = ctx
       connectionPool withSession {
         implicit session =>
-          localCtx.complete(Users.list)
+          localCtx.complete(Persons.list)
       }
 
+    // get person by id
     case GetMessage(ctx, Some(userId)) =>
-      L.info(s"Getting user id = $userId")
+      L.info(s"Getting person id = $userId")
       val localCtx = ctx
       connectionPool withSession {
         implicit session =>
-          localCtx.complete(Users.filter(_.id === userId).firstOption)
+          localCtx.complete(Persons.filter(_.id === userId).firstOption)
 
 
       }
