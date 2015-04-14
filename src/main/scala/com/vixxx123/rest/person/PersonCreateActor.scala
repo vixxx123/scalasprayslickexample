@@ -26,10 +26,10 @@ class PersonCreateActor extends Actor with DatabaseAccess with Logging {
           try {
             val resId = PersonsIdReturning += person
             localCtx.complete(person.copy(id = Some(resId.asInstanceOf[Int])))
-            L.debug(s"User create success")
+            L.debug(s"Person create success")
           } catch {
             case e: Exception =>
-              L.error(s"Ups cannot create user: ${e.getMessage}", e)
+              L.error(s"Ups cannot create person: ${e.getMessage}", e)
               localCtx.complete(e)
           }
       }
