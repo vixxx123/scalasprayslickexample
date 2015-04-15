@@ -29,7 +29,6 @@ trait PersonApi extends HttpService with BaseResourceApi with DatabaseAccess wit
   override val logTag: String = getClass.getName
 
   override def init() = {
-
     connectionPool withSession {
       L.debug("initializing persons")
       implicit session =>
@@ -37,6 +36,7 @@ trait PersonApi extends HttpService with BaseResourceApi with DatabaseAccess wit
           Persons.ddl.create
         }
     }
+    super.init()
   }
 
   val userRoute =

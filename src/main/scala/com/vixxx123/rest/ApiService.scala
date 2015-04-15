@@ -13,6 +13,8 @@ import spray.util.LoggingContext
  */
 class ApiService extends Actor with Api with Logging {
 
+  init()
+
   override val logTag: String = getClass.getName
 
   override implicit def actorRefFactory: ActorContext = context
@@ -29,7 +31,6 @@ object ApiService {
 
 
 trait Api extends HttpService with PersonApi with CompanyApi {
-  init()
   val routing = userRoute ~ companyRoute
 }
 

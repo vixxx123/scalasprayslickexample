@@ -12,7 +12,7 @@ import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.jdbc.meta.MTable
 
 /**
- * Person API main class
+ * Company API main class
  *
  * trait HttpService - for spray routing
  * trait BaseResourceApi - for initialization
@@ -21,6 +21,9 @@ import scala.slick.jdbc.meta.MTable
  */
 trait CompanyApi extends HttpService with BaseResourceApi with DatabaseAccess with Logging {
 
+  /**
+   * Handler val names must be unique in the system - all
+   */
   val companyCreateHandler = actorRefFactory.actorOf(RoundRobinPool(2).props(Props[CreateActor]), s"${TableName}CreateRouter")
   val companyPutHandler = actorRefFactory.actorOf(RoundRobinPool(5).props(Props[UpdateActor]), s"${TableName}PutRouter")
   val companyGetHandler = actorRefFactory.actorOf(RoundRobinPool(20).props(Props[GetActor]), s"${TableName}GetRouter")
@@ -29,13 +32,15 @@ trait CompanyApi extends HttpService with BaseResourceApi with DatabaseAccess wi
   override val logTag: String = getClass.getName
 
   override def init() = {
+
     connectionPool withSession {
       implicit session =>
-        L.debug("initializing persons")
+        L.debug("initializing companies")
         if (MTable.getTables(TableName).list.isEmpty) {
           Companies.ddl.create
         }
     }
+    super.init()
   }
 
   val companyRoute =
