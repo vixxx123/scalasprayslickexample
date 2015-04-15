@@ -1,4 +1,4 @@
-package com.vixxx123.rest.internal.logger
+package com.vixxx123.logger
 
 import akka.actor.{Props, ActorSystem, Actor}
 import com.vixxx123.rest.Api

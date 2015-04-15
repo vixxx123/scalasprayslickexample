@@ -2,7 +2,7 @@ package com.vixxx123.rest.person
 
 import akka.actor.Props
 import akka.routing.RoundRobinPool
-import com.vixxx123.rest.internal.configuration.DatabaseAccess
+import com.vixxx123.database.DatabaseAccess
 import com.vixxx123.rest.{BaseResourceApi, Api}
 import spray.routing.HttpService
 import spray.httpx.SprayJsonSupport._

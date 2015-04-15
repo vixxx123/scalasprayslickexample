@@ -1,4 +1,4 @@
-package com.vixxx123.rest.internal.logger
+package com.vixxx123.logger
 
 trait BaseLogger {
   def debug(msg: String, tag: String)

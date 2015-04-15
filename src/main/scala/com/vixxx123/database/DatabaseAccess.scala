@@ -1,9 +1,9 @@
-package com.vixxx123.rest.internal.configuration
+package com.vixxx123.database
 
+import com.mchange.v2.c3p0.ComboPooledDataSource
 import com.typesafe.config.ConfigFactory
 
 import scala.slick.driver.MySQLDriver.simple._
-import com.mchange.v2.c3p0.ComboPooledDataSource
 
 /**
  * Database connection pool trait / mix it wherever db access is needed

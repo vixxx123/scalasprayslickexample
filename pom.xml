@@ -21,6 +21,7 @@
         <c3p0.version>0.9.1.2</c3p0.version>
         <scalatest.verion>2.2.1</scalatest.verion>
         <typesafe.config.version>1.2.1</typesafe.config.version>
+        <websocket.version>0.1.4</websocket.version>
     </properties>
 
     <repositories>
@@ -122,6 +123,12 @@
             <artifactId>scalatest_${scala.version.major}</artifactId>
             <version>${scalatest.verion}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wandoulabs.akka</groupId>
+            <artifactId>spray-websocket_${scala.version.major}</artifactId>
+            <version>${websocket.version}</version>
         </dependency>
 
     </dependencies>

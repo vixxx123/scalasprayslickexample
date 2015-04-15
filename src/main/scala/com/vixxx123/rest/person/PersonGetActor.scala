@@ -1,8 +1,9 @@
 package com.vixxx123.rest.person
 
 import akka.actor.Actor
-import com.vixxx123.rest.internal.configuration.DatabaseAccess
-import com.vixxx123.rest.internal.logger.Logging
+import com.vixxx123.database.DatabaseAccess
+import com.vixxx123.logger.Logging
+import com.vixxx123.websocket._
 import spray.routing.RequestContext
 import spray.httpx.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
@@ -13,7 +14,7 @@ case class GetMessage(ctx: RequestContext, userId: Option[Int])
 /**
  * Actor handling person get message
  */
-class PersonGetActor extends Actor with DatabaseAccess with Logging {
+class PersonGetActor extends Actor with DatabaseAccess with Logging with PublishWebSocket {
 
   override val logTag: String = getClass.getName
 
@@ -22,6 +23,9 @@ class PersonGetActor extends Actor with DatabaseAccess with Logging {
     // get all persons
     case GetMessage(ctx, None) =>
       L.info("Getting all persons")
+
+      publishAll(RawTextPublishMessage("Getting all persons"))
+
       val localCtx = ctx
       connectionPool withSession {
         implicit session =>

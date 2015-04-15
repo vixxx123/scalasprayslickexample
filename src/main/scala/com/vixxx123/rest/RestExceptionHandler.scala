@@ -1,6 +1,6 @@
 package com.vixxx123.rest
 
-import com.vixxx123.rest.internal.logger.Logging
+import com.vixxx123.logger.Logging
 import spray.routing.ExceptionHandler
 import spray.util.LoggingContext
 

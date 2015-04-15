@@ -1,9 +1,9 @@
 package com.vixxx123.rest.person
 
 import akka.actor.Actor
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
-import com.vixxx123.rest.internal.configuration.DatabaseAccess
-import com.vixxx123.rest.internal.logger.Logging
+import com.vixxx123.database.DatabaseAccess
+import com.vixxx123.logger.Logging
+import com.vixxx123.websocket.{CreatePublishMessage, PublishWebSocket}
 import spray.routing.RequestContext
 import spray.httpx.SprayJsonSupport._
 import scala.slick.driver.MySQLDriver.simple._
@@ -13,7 +13,7 @@ case class CreateMessage(ctx: RequestContext, person: Person)
 /**
  * Actor handling person create message
  */
-class PersonCreateActor extends Actor with DatabaseAccess with Logging {
+class PersonCreateActor extends Actor with DatabaseAccess with Logging with PublishWebSocket {
 
   override val logTag = getClass.getName
 
@@ -25,7 +25,9 @@ class PersonCreateActor extends Actor with DatabaseAccess with Logging {
         implicit session =>
           try {
             val resId = PersonsIdReturning += person
-            localCtx.complete(person.copy(id = Some(resId.asInstanceOf[Int])))
+            val addedPerson = person.copy(id = Some(resId.asInstanceOf[Int]))
+            localCtx.complete(addedPerson)
+            publishAll(CreatePublishMessage(TableName, localCtx.request.uri + "/" + addedPerson.id.get, addedPerson))
             L.debug(s"Person create success")
           } catch {
             case e: Exception =>

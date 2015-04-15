@@ -1,4 +1,4 @@
-package com.vixxx123.rest.internal.logger
+package com.vixxx123.logger
 
 class ConsoleLogger extends BaseLogger {
 

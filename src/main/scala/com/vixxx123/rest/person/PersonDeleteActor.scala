@@ -1,7 +1,9 @@
 package com.vixxx123.rest.person
 
 import akka.actor.Actor
-import com.vixxx123.rest.internal.configuration.DatabaseAccess
+import com.vixxx123.database.DatabaseAccess
+import com.vixxx123.logger.Logging
+import com.vixxx123.websocket.{DeletePublishMessage, PublishWebSocket}
 import spray.routing.RequestContext
 import spray.httpx.SprayJsonSupport._
 import scala.slick.driver.MySQLDriver.simple._
@@ -13,7 +15,7 @@ case class DeleteResult(deleted: Boolean)
 /**
  * Actor handling delete message
  */
-class PersonDeleteActor extends Actor with DatabaseAccess {
+class PersonDeleteActor extends Actor with DatabaseAccess with PublishWebSocket with Logging {
 
   override def receive: Receive = {
     case DeleteMessage(ctx, personId) =>
@@ -22,8 +24,11 @@ class PersonDeleteActor extends Actor with DatabaseAccess {
         implicit session =>
           val deleted = Persons.filter(_.id === personId).delete
           localCtx.complete(DeleteResult(deleted == 1))
+          publishAll(DeletePublishMessage(TableName, personId))
       }
 
   }
+
+  override val logTag: String = getClass.getName
 }
 
