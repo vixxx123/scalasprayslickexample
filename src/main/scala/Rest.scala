@@ -34,6 +34,4 @@ object Rest extends App {
   Thread.sleep(1000)
   IO(Http) ! Http.Bind(service, interface = "localhost", port = 8080)
 
-  StdIn.readLine("Hit ENTER to exit ...\n")
-  system.shutdown()
 }

@@ -13,11 +13,12 @@ case class CreateMessage(ctx: RequestContext, person: Person)
 /**
  * Actor handling person create message
  */
-class PersonCreateActor extends Actor with DatabaseAccess with Logging with PublishWebSocket {
+class CreateActor extends Actor with DatabaseAccess with Logging with PublishWebSocket {
 
   override val logTag = getClass.getName
 
   override def receive: Receive = {
+
     case CreateMessage(ctx, person) =>
 
       val localCtx = ctx

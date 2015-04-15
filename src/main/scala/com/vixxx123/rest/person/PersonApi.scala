@@ -3,6 +3,7 @@ package com.vixxx123.rest.person
 import akka.actor.Props
 import akka.routing.RoundRobinPool
 import com.vixxx123.database.DatabaseAccess
+import com.vixxx123.logger.Logging
 import com.vixxx123.rest.{BaseResourceApi, Api}
 import spray.routing.HttpService
 import spray.httpx.SprayJsonSupport._
@@ -18,16 +19,19 @@ import scala.slick.jdbc.meta.MTable
  * trait DatabaseAccess - for db access
  *
  */
-trait PersonApi extends HttpService with BaseResourceApi with DatabaseAccess {
+trait PersonApi extends HttpService with BaseResourceApi with DatabaseAccess with Logging {
 
-  val personCreateHandler = actorRefFactory.actorOf(RoundRobinPool(2).props(Props[PersonCreateActor]), "personCreateRouter")
-  val personPutHandler = actorRefFactory.actorOf(RoundRobinPool(5).props(Props[PersonUpdateActor]), "personPutRouter")
-  val personGetHandler = actorRefFactory.actorOf(RoundRobinPool(20).props(Props[PersonGetActor]), "personGetRouter")
-  val personDeleteHandler = actorRefFactory.actorOf(RoundRobinPool(20).props(Props[PersonDeleteActor]), "personDeleteRouter")
+  val personCreateHandler = actorRefFactory.actorOf(RoundRobinPool(2).props(Props[CreateActor]), s"${TableName}CreateRouter")
+  val personPutHandler = actorRefFactory.actorOf(RoundRobinPool(5).props(Props[UpdateActor]), s"${TableName}PutRouter")
+  val personGetHandler = actorRefFactory.actorOf(RoundRobinPool(20).props(Props[GetActor]), s"${TableName}GetRouter")
+  val personDeleteHandler = actorRefFactory.actorOf(RoundRobinPool(20).props(Props[DeleteActor]), s"${TableName}DeleteRouter")
 
+  override val logTag: String = getClass.getName
 
   override def init() = {
+
     connectionPool withSession {
+      L.debug("initializing persons")
       implicit session =>
         if (MTable.getTables(TableName).list.isEmpty) {
           Persons.ddl.create
@@ -36,31 +40,31 @@ trait PersonApi extends HttpService with BaseResourceApi with DatabaseAccess {
   }
 
   val userRoute =
-    pathPrefix("person") {
+    pathPrefix(TableName) {
       pathEnd {
         get {
           ctx => personGetHandler ! GetMessage(ctx, None)
         } ~
         post {
           entity(as[Person]) {
-            user =>
-              ctx => personCreateHandler ! CreateMessage(ctx, user)
+            entity =>
+              ctx => personCreateHandler ! CreateMessage(ctx, entity)
           }
         }
       } ~
       pathPrefix (IntNumber){
-        userId => {
+        entityId => {
           pathEnd {
             get {
-              ctx => personGetHandler ! GetMessage(ctx, Some(userId))
+              ctx => personGetHandler ! GetMessage(ctx, Some(entityId))
             } ~ put {
-              entity(as[Person]) { user =>
-                ctx => personPutHandler ! PutMessage(ctx, user.copy(id = Some(userId)))
+              entity(as[Person]) { entity =>
+                ctx => personPutHandler ! PutMessage(ctx, entity.copy(id = Some(entityId)))
               }
             } ~ delete {
-              ctx => personDeleteHandler ! DeleteMessage(ctx, userId)
+              ctx => personDeleteHandler ! DeleteMessage(ctx, entityId)
             } ~ patch {
-              ctx => personPutHandler ! PatchMessage(ctx, userId)
+              ctx => personPutHandler ! PatchMessage(ctx, entityId)
             }
           }
         }

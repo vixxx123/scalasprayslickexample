@@ -15,7 +15,7 @@ case class DeleteResult(deleted: Boolean)
 /**
  * Actor handling delete message
  */
-class PersonDeleteActor extends Actor with DatabaseAccess with PublishWebSocket with Logging {
+class DeleteActor extends Actor with DatabaseAccess with PublishWebSocket with Logging {
 
   override def receive: Receive = {
     case DeleteMessage(ctx, personId) =>

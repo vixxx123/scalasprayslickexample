@@ -14,7 +14,7 @@ case class GetMessage(ctx: RequestContext, userId: Option[Int])
 /**
  * Actor handling person get message
  */
-class PersonGetActor extends Actor with DatabaseAccess with Logging with PublishWebSocket {
+class GetActor extends Actor with DatabaseAccess with Logging with PublishWebSocket {
 
   override val logTag: String = getClass.getName
 
@@ -23,8 +23,6 @@ class PersonGetActor extends Actor with DatabaseAccess with Logging with Publish
     // get all persons
     case GetMessage(ctx, None) =>
       L.info("Getting all persons")
-
-      publishAll(RawTextPublishMessage("Getting all persons"))
 
       val localCtx = ctx
       connectionPool withSession {

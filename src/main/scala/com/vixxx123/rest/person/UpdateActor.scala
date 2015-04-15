@@ -18,7 +18,7 @@ case class PatchMessage(ctx: RequestContext, userId: Int)
 /**
  * Actor handling update messages
  */
-class PersonUpdateActor extends Actor with DatabaseAccess with PublishWebSocket with Logging {
+class UpdateActor extends Actor with DatabaseAccess with PublishWebSocket with Logging {
 
 
   override def receive: Receive = {
