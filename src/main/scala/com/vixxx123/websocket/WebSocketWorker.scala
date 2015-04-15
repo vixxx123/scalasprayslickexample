@@ -3,8 +3,7 @@ package com.vixxx123.websocket
 import akka.actor.{ActorRefFactory, Props, ActorRef}
 import spray.can.websocket
 import spray.can.websocket.FrameCommandFailed
-import spray.can.websocket.frame.{Frame, TextFrame, BinaryFrame}
-import spray.http.HttpRequest
+import spray.can.websocket.frame.TextFrame
 import spray.routing.HttpServiceActor
 
 
