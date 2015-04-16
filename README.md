@@ -25,4 +25,9 @@ The database underneath is mysql, but it can be easily switch to any other which
 * Adding OAuth 2
 * Publishing message via websocket to specific user only (based on open session and user id)
 
+### How to run ###
+* mvn clean install
+* mvn scala:run -DmainClass=com.vixxx123.Rest
+
+
 ### Have fun ###
