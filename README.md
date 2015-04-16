@@ -21,6 +21,12 @@ The database underneath is mysql, but it can be easily switch to any other which
 * Set up user and database on mysql server
 * Edit db.conf in resources to configure db connection
 
+### Features ###
+* Each type of resource and method can have different numbers of actors - easy to optimise performance
+* Fully based on Akka
+* Uses Slick for persistence - easy to switch between databases (at least it should be easy :) )
+* Push messaging via websocket
+
 ### Road map ###
 * Adding OAuth 2
 * Publishing message via websocket to specific user only (based on open session and user id)
