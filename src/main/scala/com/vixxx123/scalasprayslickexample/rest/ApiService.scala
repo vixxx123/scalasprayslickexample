@@ -11,13 +11,12 @@ import spray.util.LoggingContext
 /**
  * Main Api service class
  */
-class ApiService extends Actor with Api with Logging {
+class ApiService(availableApis: List[Api]) extends Actor with HttpServiceBase with Logging {
 
-  init()
-
+  val apis = availableApis.map{_.create(context)}.toList
+  val routing: Route = apis(0).route()
+  println(routing)
   override val logTag: String = getClass.getName
-
-  override implicit def actorRefFactory: ActorContext = context
 
   override def receive = runRoute(handleExceptions(new RestExceptionHandler().exceptionHandler){routing})
 
@@ -26,14 +25,16 @@ class ApiService extends Actor with Api with Logging {
 object ApiService {
   val ActorName = "api-root"
 
-  def props() = Props(classOf[ApiService])
+  def props(availableApis: List[Api]) = Props(classOf[ApiService], availableApis)
 }
 
 
-trait Api extends HttpService with PersonApi with CompanyApi {
-  val routing = userRoute ~ companyRoute
+trait Api {
+  def create(actorContext: ActorContext): BaseResourceApi
 }
 
-trait BaseResourceApi {
+trait BaseResourceApi extends HttpServiceBase{
+
   def init(): Unit = {}
+  def route(): Route
 }

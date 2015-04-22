@@ -1,12 +1,11 @@
 package com.vixxx123.scalasprayslickexample.rest.company
 
-import akka.actor.Props
+import akka.actor.{ActorContext, ActorRefFactory, Props}
 import akka.routing.RoundRobinPool
 import com.vixxx123.scalasprayslickexample.database.DatabaseAccess
 import com.vixxx123.scalasprayslickexample.logger.Logging
-import com.vixxx123.scalasprayslickexample.rest.BaseResourceApi
+import com.vixxx123.scalasprayslickexample.rest.{Api, BaseResourceApi}
 import spray.httpx.SprayJsonSupport._
-import spray.routing.HttpService
 
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.jdbc.meta.MTable
@@ -19,7 +18,7 @@ import scala.slick.jdbc.meta.MTable
  * trait DatabaseAccess - for db access
  *
  */
-trait CompanyApi extends HttpService with BaseResourceApi with DatabaseAccess with Logging {
+class CompanyApi(actorRefFactory: ActorContext) extends BaseResourceApi with DatabaseAccess with Logging {
 
   /**
    * Handler val names must be unique in the system - all
@@ -43,7 +42,7 @@ trait CompanyApi extends HttpService with BaseResourceApi with DatabaseAccess wi
     super.init()
   }
 
-  val companyRoute =
+  override def route() =
     pathPrefix(TableName) {
       pathEnd {
         get {
@@ -74,4 +73,8 @@ trait CompanyApi extends HttpService with BaseResourceApi with DatabaseAccess wi
         }
       }
     }
+}
+
+object CompanyApi extends Api{
+  override def create(actorContext: ActorContext): BaseResourceApi = new CompanyApi(actorContext)
 }

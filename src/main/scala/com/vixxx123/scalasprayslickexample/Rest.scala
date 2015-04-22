@@ -5,6 +5,8 @@ import akka.io.IO
 import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.logger.{ConsoleLogger, Logger}
 import com.vixxx123.scalasprayslickexample.rest.ApiService
+import com.vixxx123.scalasprayslickexample.rest.company.CompanyApi
+import com.vixxx123.scalasprayslickexample.rest.person.PersonApi
 import com.vixxx123.scalasprayslickexample.websocket.WebSocketServer
 import spray.can.Http
 import spray.can.server.UHttp
@@ -21,7 +23,7 @@ object Rest extends App {
    Logger.LoggingActorSystem.actorOf(Logger.props(List(new ConsoleLogger)), Logger.LoggerActorName)
 
    // start up API service actor
-   val service = system.actorOf(ApiService.props(), ApiService.ActorName)
+   val service = system.actorOf(ApiService.props(List(PersonApi, CompanyApi)), ApiService.ActorName)
    val server = system.actorOf(WebSocketServer.props(), "websocket")
 
    implicit val timeout = Timeout(5.seconds)
