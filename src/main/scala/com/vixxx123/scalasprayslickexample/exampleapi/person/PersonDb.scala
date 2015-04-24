@@ -12,6 +12,6 @@ class PersonT(tag: Tag) extends BaseT[Person](tag, "person") {
   def name: Column[String] = column[String]("name")
   def lastname: Column[String] = column[String]("lastname")
 
-  def * = (id.?, name, lastname) <> (
+  override def * = (id.?, name, lastname) <> (
     (Person.apply _).tupled, Person.unapply)
 }

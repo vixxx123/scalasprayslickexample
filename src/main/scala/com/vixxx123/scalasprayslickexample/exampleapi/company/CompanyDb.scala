@@ -12,6 +12,6 @@ class CompanyT(tag: Tag) extends BaseT[Company](tag, ResourceName) {
   def name: Column[String] = column[String]("name")
   def address: Column[String] = column[String]("address")
 
-  def * = (id.?, name, address) <> (
+  override def * = (id.?, name, address) <> (
     (Company.apply _).tupled, Company.unapply)
 }
