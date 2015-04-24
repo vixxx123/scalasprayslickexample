@@ -1,6 +1,6 @@
 package com.vixxx123.scalasprayslickexample.exampleapi.person
 
-import akka.actor.Actor
+import akka.actor.{Props, Actor}
 import com.vixxx123.scalasprayslickexample.entity.EntityHelper
 import com.vixxx123.scalasprayslickexample.logger.Logging
 import com.vixxx123.scalasprayslickexample.rest.HttpRequestHelper
@@ -13,7 +13,7 @@ case class CreateMessage(ctx: RequestContext, person: Person)
 /**
  * Actor handling person create message
  */
-class CreateActor extends Actor with Logging with PublishWebSocket with HttpRequestHelper with EntityHelper {
+class CreateActor(personDb: PersonDb) extends Actor with Logging with PublishWebSocket with HttpRequestHelper with EntityHelper {
 
   override val logTag = getClass.getName
 
@@ -22,7 +22,7 @@ class CreateActor extends Actor with Logging with PublishWebSocket with HttpRequ
     case CreateMessage(ctx, person) =>
 
       try {
-        val addedPerson = person.copy(id = Some(PersonDb.create(person)))
+        val addedPerson = person.copy(id = Some(personDb.create(person)))
         ctx.complete(addedPerson)
         publishAll(CreatePublishMessage(ResourceName, entityUri(getRequestUri(ctx), addedPerson), addedPerson))
         L.debug(s"Person create success")
@@ -32,5 +32,9 @@ class CreateActor extends Actor with Logging with PublishWebSocket with HttpRequ
           ctx.complete(e)
       }
   }
+}
 
+object CreateActor {
+  val Name = s"${ResourceName}CreateRouter"
+  def props(personDb: PersonDb) = Props(classOf[CreateActor], personDb)
 }

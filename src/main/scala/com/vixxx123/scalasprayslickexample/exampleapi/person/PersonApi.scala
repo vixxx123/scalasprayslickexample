@@ -17,10 +17,10 @@ import spray.httpx.SprayJsonSupport._
  */
 class PersonApi(actorContext: ActorContext) extends BaseResourceApi with Logging {
 
-  val personCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(Props[CreateActor]), s"${ResourceName}CreateRouter")
-  val personPutHandler = actorContext.actorOf(RoundRobinPool(5).props(Props[UpdateActor]), s"${ResourceName}PutRouter")
-  val personGetHandler = actorContext.actorOf(RoundRobinPool(20).props(Props[GetActor]), s"${ResourceName}GetRouter")
-  val personDeleteHandler = actorContext.actorOf(RoundRobinPool(20).props(Props[DeleteActor]), s"${ResourceName}DeleteRouter")
+  val personCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(Props[CreateActor]), CreateActor.Name)
+  val personPutHandler = actorContext.actorOf(RoundRobinPool(5).props(Props[UpdateActor]), )
+  val personGetHandler = actorContext.actorOf(RoundRobinPool(20).props(Props[GetActor]), GetActor.Name)
+  val personDeleteHandler = actorContext.actorOf(RoundRobinPool(20).props(Props[DeleteActor]), DeleteActor.Name)
 
   override val logTag: String = getClass.getName
 

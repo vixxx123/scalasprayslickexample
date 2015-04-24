@@ -10,6 +10,8 @@ import spray.routing._
 class ApiService(availableApis: List[Api]) extends Actor with HttpServiceBase with Logging {
 
   val apis = availableApis.map{_.create(context)}
+  apis.foreach(_.init())
+
   val routing: Route = apis.foldLeft[Route](null)((a,b) => if (a == null) b.route() else {a ~ b.route()})
 
   override val logTag: String = getClass.getName

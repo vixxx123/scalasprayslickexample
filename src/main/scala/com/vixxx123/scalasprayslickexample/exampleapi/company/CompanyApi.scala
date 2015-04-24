@@ -19,15 +19,18 @@ class CompanyApi(actorContext: ActorContext) extends BaseResourceApi with Loggin
   /**
    * Handler val names must be unique in the system - all
    */
-  val companyCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(Props[CreateActor]), s"${ResourceName}CreateRouter")
-  val companyPutHandler = actorContext.actorOf(RoundRobinPool(5).props(Props[UpdateActor]), s"${ResourceName}PutRouter")
-  val companyGetHandler = actorContext.actorOf(RoundRobinPool(20).props(Props[GetActor]), s"${ResourceName}GetRouter")
-  val companyDeleteHandler = actorContext.actorOf(RoundRobinPool(20).props(Props[DeleteActor]), s"${ResourceName}DeleteRouter")
+
+  private val companyDb = new CompanyDb
+
+  private val companyCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(CreateActor.props(companyDb)), CreateActor.Name)
+  private val companyPutHandler = actorContext.actorOf(RoundRobinPool(5).props(UpdateActor.props(companyDb)), UpdateActor.Name)
+  private val companyGetHandler = actorContext.actorOf(RoundRobinPool(20).props(GetActor.props(companyDb)), GetActor.Name)
+  private val companyDeleteHandler = actorContext.actorOf(RoundRobinPool(20).props(DeleteActor.props(companyDb)), DeleteActor.Name)
 
   override val logTag: String = getClass.getName
 
   override def init() = {
-    CompanyDb.initTable()
+    companyDb.initTable()
     super.init()
   }
 

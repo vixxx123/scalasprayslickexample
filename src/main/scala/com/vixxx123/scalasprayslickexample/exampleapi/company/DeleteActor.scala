@@ -1,6 +1,6 @@
 package com.vixxx123.scalasprayslickexample.exampleapi.company
 
-import akka.actor.Actor
+import akka.actor.{Props, Actor}
 import com.vixxx123.scalasprayslickexample.logger.Logging
 import com.vixxx123.scalasprayslickexample.websocket.{DeletePublishMessage, PublishWebSocket}
 import spray.httpx.SprayJsonSupport._
@@ -13,11 +13,11 @@ case class DeleteResult(deleted: Boolean)
 /**
  * Actor handling delete message
  */
-class DeleteActor extends Actor with PublishWebSocket with Logging {
+class DeleteActor(companyDb: CompanyDb) extends Actor with PublishWebSocket with Logging {
 
   override def receive: Receive = {
     case DeleteMessage(ctx, companyId) =>
-      val count = CompanyDb.deleteById(companyId)
+      val count = companyDb.deleteById(companyId)
       ctx.complete(DeleteResult(count == 1))
       publishAll(DeletePublishMessage(ResourceName, companyId))
 
@@ -26,3 +26,7 @@ class DeleteActor extends Actor with PublishWebSocket with Logging {
   override val logTag: String = getClass.getName
 }
 
+object DeleteActor {
+  val Name = s"${ResourceName}DeleteRouter"
+  def props(companyDb: CompanyDb) = Props(classOf[CreateActor], companyDb)
+}

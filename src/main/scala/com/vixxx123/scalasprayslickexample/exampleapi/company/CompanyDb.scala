@@ -6,9 +6,7 @@ import scala.slick.driver.MySQLDriver.simple._
 /**
  * Created by WiktorT on 24/04/2015.
  */
-object CompanyDb extends BaseDbEntity[Company, CompanyT](ResourceName, TableQuery[CompanyT]) {
-
-}
+class CompanyDb extends BaseDbEntity[Company, CompanyT](ResourceName, TableQuery[CompanyT])
 
 class CompanyT(tag: Tag) extends BaseT[Company](tag, ResourceName) {
   def name: Column[String] = column[String]("name")
