@@ -25,6 +25,7 @@
         <mockito.version>1.10.19</mockito.version>
         <surefire.plugin.version>2.18.1</surefire.plugin.version>
         <junit.version>4.11</junit.version>
+        <oauth.version>0.13.3</oauth.version>
     </properties>
 
     <repositories>
@@ -121,6 +122,13 @@
             <artifactId>spray-websocket_${scala.version.major}</artifactId>
             <version>${websocket.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.nulab-inc</groupId>
+            <artifactId>scala-oauth2-core_${scala.version.major}</artifactId>
+            <version>${oauth.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>mysql</groupId>

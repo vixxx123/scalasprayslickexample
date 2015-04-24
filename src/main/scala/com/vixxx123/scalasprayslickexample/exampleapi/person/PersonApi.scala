@@ -12,20 +12,21 @@ import spray.httpx.SprayJsonSupport._
  *
  * trait HttpService - for spray routing
  * trait BaseResourceApi - for initialization
- * trait DatabaseAccess - for db access
  *
  */
 class PersonApi(actorContext: ActorContext) extends BaseResourceApi with Logging {
 
-  val personCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(Props[CreateActor]), CreateActor.Name)
-  val personPutHandler = actorContext.actorOf(RoundRobinPool(5).props(Props[UpdateActor]), )
-  val personGetHandler = actorContext.actorOf(RoundRobinPool(20).props(Props[GetActor]), GetActor.Name)
-  val personDeleteHandler = actorContext.actorOf(RoundRobinPool(20).props(Props[DeleteActor]), DeleteActor.Name)
+  val personDb = new PersonDb
+
+  val personCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(CreateActor.props(personDb)), CreateActor.Name)
+  val personPutHandler = actorContext.actorOf(RoundRobinPool(5).props(UpdateActor.props(personDb)), UpdateActor.Name)
+  val personGetHandler = actorContext.actorOf(RoundRobinPool(20).props(GetActor.props(personDb)), GetActor.Name)
+  val personDeleteHandler = actorContext.actorOf(RoundRobinPool(20).props(DeleteActor.props(personDb)), DeleteActor.Name)
 
   override val logTag: String = getClass.getName
 
   override def init() = {
-    PersonDb.initTable()
+    personDb.initTable()
     super.init()
   }
 
