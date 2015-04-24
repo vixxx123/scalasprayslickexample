@@ -1,29 +1,27 @@
-package com.vixxx123.scalasprayslickexample
+package com.vixxx123.scalasprayslickexample.rest
 
-import akka.actor.{PoisonPill, ActorSystem}
+import akka.actor.{ActorSystem, PoisonPill}
 import akka.io.IO
 import akka.util.Timeout
-import com.vixxx123.scalasprayslickexample.logger.{ConsoleLogger, Logger}
-import com.vixxx123.scalasprayslickexample.rest.ApiService
-import com.vixxx123.scalasprayslickexample.rest.company.CompanyApi
-import com.vixxx123.scalasprayslickexample.rest.person.PersonApi
+import com.vixxx123.scalasprayslickexample.logger.{BaseLogger, Logger}
 import com.vixxx123.scalasprayslickexample.websocket.WebSocketServer
 import spray.can.Http
 import spray.can.server.UHttp
+
 import scala.concurrent.duration._
 
 /**
   * Created by Wiktor Tychulski on 2014-11-16.
   */
-object Rest extends App {
+class Rest(actorSystem: ActorSystem, listOfApis:List[Api], loggers: List[BaseLogger]) {
    // we need an ActorSystem to host our application in
-   implicit val system = ActorSystem("on-spray-can")
+   implicit val system = actorSystem
 
    // start up logger actor system and logger actor
-   Logger.LoggingActorSystem.actorOf(Logger.props(List(new ConsoleLogger)), Logger.LoggerActorName)
+   Logger.LoggingActorSystem.actorOf(Logger.props(loggers), Logger.LoggerActorName)
 
    // start up API service actor
-   val service = system.actorOf(ApiService.props(List(PersonApi, CompanyApi)), ApiService.ActorName)
+   val service = system.actorOf(ApiService.props(listOfApis), ApiService.ActorName)
    val server = system.actorOf(WebSocketServer.props(), "websocket")
 
    implicit val timeout = Timeout(5.seconds)

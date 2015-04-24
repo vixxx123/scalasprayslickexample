@@ -1,4 +1,4 @@
-package com.vixxx123.scalasprayslickexample.rest.company
+package com.vixxx123.scalasprayslickexample.exampleapi.person
 
 import com.vixxx123.scalasprayslickexample.rest.RestException
 import spray.http.StatusCodes
