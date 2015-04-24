@@ -1,7 +1,6 @@
 package com.vixxx123.scalasprayslickexample.logger
 
 import akka.actor.{Props, ActorSystem, Actor}
-import com.vixxx123.scalasprayslickexample.rest.Api
 
 class Logger(handler: List[BaseLogger]) extends Actor {
 

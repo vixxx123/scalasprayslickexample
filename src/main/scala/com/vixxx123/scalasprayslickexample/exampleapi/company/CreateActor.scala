@@ -1,7 +1,6 @@
 package com.vixxx123.scalasprayslickexample.exampleapi.company
 
 import akka.actor.Actor
-import com.vixxx123.scalasprayslickexample.database.DatabaseAccess
 import com.vixxx123.scalasprayslickexample.entity.EntityHelper
 import com.vixxx123.scalasprayslickexample.logger.Logging
 import com.vixxx123.scalasprayslickexample.rest.HttpRequestHelper

@@ -6,7 +6,6 @@ import com.vixxx123.scalasprayslickexample.logger.Logging
 import com.vixxx123.scalasprayslickexample.rest.{BaseResourceApi, Api}
 import spray.httpx.SprayJsonSupport._
 
-import scala.slick.jdbc.meta.MTable
 
 /**
  * Person API main class

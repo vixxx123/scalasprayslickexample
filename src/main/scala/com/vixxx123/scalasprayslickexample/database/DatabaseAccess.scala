@@ -3,13 +3,14 @@ package com.vixxx123.scalasprayslickexample.database
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import com.typesafe.config.ConfigFactory
 
+import scala.slick.driver.MySQLDriver
 import scala.slick.driver.MySQLDriver.simple._
 
 /**
  * Database connection pool trait / mix it wherever db access is needed
  */
 trait DatabaseAccess {
-  val connectionPool = DatabaseAccess.DatabasePool
+  val connectionPool: MySQLDriver.backend.DatabaseDef = DatabaseAccess.DatabasePool
 }
 
 private object DatabaseAccess {
