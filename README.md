@@ -77,6 +77,11 @@ class CompanyApi(actorContext: ActorContext) extends BaseResourceApi with Loggin
       }
     }
 }
+
+object CompanyApi extends Api{
+  override def create(actorContext: ActorContext): BaseResourceApi = new CompanyApi(actorContext)
+}
+
 ```
 
 * create new routing class - which inherits from BaseResourceApi
@@ -85,6 +90,13 @@ class CompanyApi(actorContext: ActorContext) extends BaseResourceApi with Loggin
 * create new object/class which inherits from
     - create method should return new routing class (created in previous step)
 * in RestExampleApi object add your Api class to list.
+
+```scala
+object RestExampleApp extends App{
+  new Rest(ActorSystem("on-spray-can"), List(PersonApi, CompanyApi), List(new ConsoleLogger))
+}
+```
+
 * that's it - you are good to go
 
 PersonApi class is just an example you don't have to implement handling incoming request same way,
