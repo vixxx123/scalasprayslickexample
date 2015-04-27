@@ -14,9 +14,7 @@ import spray.httpx.SprayJsonSupport._
  * trait BaseResourceApi - for initialization
  *
  */
-class PersonApi(actorContext: ActorContext) extends BaseResourceApi with Logging {
-
-  val personDao = new PersonDao
+class PersonApi(actorContext: ActorContext, personDao: PersonDao) extends BaseResourceApi with Logging {
 
   val personCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(CreateActor.props(personDao)), CreateActor.Name)
   val personPutHandler = actorContext.actorOf(RoundRobinPool(5).props(UpdateActor.props(personDao)), UpdateActor.Name)
@@ -63,6 +61,8 @@ class PersonApi(actorContext: ActorContext) extends BaseResourceApi with Logging
     }
 }
 
-object PersonApi extends Api{
-  override def create(actorContext: ActorContext): BaseResourceApi = new PersonApi(actorContext)
+class PersonApiBuilder extends Api{
+  override def create(actorContext: ActorContext): BaseResourceApi = {
+    new PersonApi(actorContext, new PersonDao)
+  }
 }

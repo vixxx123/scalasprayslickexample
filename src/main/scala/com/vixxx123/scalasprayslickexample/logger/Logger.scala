@@ -25,6 +25,11 @@ object Logger {
   val LoggerActorName = "Logger-Actor"
 
   def props(handlers: List[BaseLogger]) = Props(classOf[Logger], handlers)
+
+  def shutdown():Unit = {
+    LoggingActorSystem.shutdown()
+    LoggingActorSystem.awaitTermination()
+  }
 }
 
 

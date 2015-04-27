@@ -89,6 +89,12 @@
         </dependency>
 
         <dependency>
+            <groupId>io.spray</groupId>
+            <artifactId>spray-client_${scala.version.major}</artifactId>
+            <version>${spray.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.typesafe.slick</groupId>
             <artifactId>slick_${scala.version.major}</artifactId>
             <version>${slick.version}</version>

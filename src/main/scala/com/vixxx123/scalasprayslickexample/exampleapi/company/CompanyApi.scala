@@ -14,13 +14,11 @@ import spray.httpx.SprayJsonSupport._
  * trait DatabaseAccess - for db access
  *
  */
-class CompanyApi(actorContext: ActorContext) extends BaseResourceApi with Logging {
+class CompanyApi(actorContext: ActorContext, companyDao: CompanyDao) extends BaseResourceApi with Logging {
 
   /**
    * Handler val names must be unique in the system - all
    */
-
-  private val companyDao = new CompanyDao
 
   private val companyCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(CreateActor.props(companyDao)), CreateActor.Name)
   private val companyPutHandler = actorContext.actorOf(RoundRobinPool(5).props(UpdateActor.props(companyDao)), UpdateActor.Name)
@@ -67,6 +65,8 @@ class CompanyApi(actorContext: ActorContext) extends BaseResourceApi with Loggin
     }
 }
 
-object CompanyApi extends Api{
-  override def create(actorContext: ActorContext): BaseResourceApi = new CompanyApi(actorContext)
+class CompanyApiBuilder extends Api{
+  override def create(actorContext: ActorContext): BaseResourceApi = {
+    new CompanyApi(actorContext, new CompanyDao)
+  }
 }

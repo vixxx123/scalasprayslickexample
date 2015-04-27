@@ -40,6 +40,8 @@ class UpdateActor(personDao: PersonDao) extends Actor with PublishWebSocket with
         val person = personDao.getById(id)
         localCtx.complete(person)
         publishAll(UpdatePublishMessage(ResourceName, getRequestUri(ctx), person))
+      } else {
+        ctx.complete(EntityNotFound(s"Not found person id $id"))
       }
   }
 

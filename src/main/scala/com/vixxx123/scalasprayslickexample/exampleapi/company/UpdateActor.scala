@@ -20,14 +20,14 @@ class UpdateActor(companyDao: CompanyDao) extends Actor with PublishWebSocket wi
   override def receive: Receive = {
 
     //handling put message
-    case PutMessage(ctx, person) =>
+    case PutMessage(ctx, company) =>
 
-      val updated = companyDao.update(person)
+      val updated = companyDao.update(company)
       if (updated == 1) {
-        ctx.complete(person)
-        publishAll(UpdatePublishMessage(ResourceName, getRequestUri(ctx), person))
+        ctx.complete(company)
+        publishAll(UpdatePublishMessage(ResourceName, getRequestUri(ctx), company))
       } else {
-        ctx.complete(EntityNotFound(s"Not found person id ${person.id}"))
+        ctx.complete(EntityNotFound(s"Not found company id ${company.id}"))
       }
 
 
@@ -39,9 +39,11 @@ class UpdateActor(companyDao: CompanyDao) extends Actor with PublishWebSocket wi
       val updateStatement = s"${SqlUtil.patch2updateStatement(companyDao.tableName, getEntityDataAsString(ctx))} ${SqlUtil.whereById(id)}"
       val updated = companyDao.runQuery(updateStatement)
       if (updated == 1) {
-        val person = companyDao.getById(id)
-        localCtx.complete(person)
-        publishAll(UpdatePublishMessage(ResourceName, getRequestUri(ctx), person))
+        val company = companyDao.getById(id)
+        localCtx.complete(company)
+        publishAll(UpdatePublishMessage(ResourceName, getRequestUri(ctx), company))
+      } else {
+        ctx.complete(EntityNotFound(s"Not found company id $id"))
       }
   }
 

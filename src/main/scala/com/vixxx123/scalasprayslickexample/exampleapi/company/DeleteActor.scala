@@ -2,13 +2,12 @@ package com.vixxx123.scalasprayslickexample.exampleapi.company
 
 import akka.actor.{Props, Actor}
 import com.vixxx123.scalasprayslickexample.logger.Logging
+import com.vixxx123.scalasprayslickexample.rest.EntityNotFound
 import com.vixxx123.scalasprayslickexample.websocket.{DeletePublishMessage, PublishWebSocket}
 import spray.httpx.SprayJsonSupport._
 import spray.routing.RequestContext
 
 case class DeleteMessage(ctx: RequestContext, companyId: Int)
-
-case class DeleteResult(deleted: Boolean)
 
 /**
  * Actor handling delete message
@@ -19,7 +18,11 @@ class DeleteActor(companyDao: CompanyDao) extends Actor with PublishWebSocket wi
     case DeleteMessage(ctx, companyId) =>
       L.debug(s"deleting company $companyId")
       val count = companyDao.deleteById(companyId)
-      ctx.complete(DeleteResult(count == 1))
+      if (count == 1) {
+        ctx.complete("")
+      } else {
+        ctx.complete(new EntityNotFound("Trying to delete non existent entity"))
+      }
       publishAll(DeletePublishMessage(ResourceName, companyId))
 
   }

@@ -14,6 +14,4 @@ package object company {
   }
 
   implicit val CompanyFormat = jsonFormat3(Company)
-
-  implicit val CompanyDeleteFormat = jsonFormat1(DeleteResult)
 }
