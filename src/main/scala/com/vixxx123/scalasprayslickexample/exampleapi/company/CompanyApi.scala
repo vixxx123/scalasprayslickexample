@@ -57,7 +57,6 @@ class CompanyApi(actorContext: ActorContext) extends BaseResourceApi with Loggin
                 ctx => companyPutHandler ! PutMessage(ctx, entity.copy(id = Some(entityId)))
               }
             } ~ delete {
-              L.debug("delete")
               ctx => companyDeleteHandler ! DeleteMessage(ctx, entityId)
             } ~ patch {
               ctx => companyPutHandler ! PatchMessage(ctx, entityId)
