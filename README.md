@@ -100,7 +100,8 @@ object RestExampleApp extends App{
 * that's it - you are good to go
 
 PersonApi class is just an example you don't have to implement handling incoming request same way,
-but I think it's quite good design. It give a possibility to configure number of workers per request type etc.
+but I think it's quite good design. It give a possibility to configure number of workers per request type etc. Of course
+it is possible to handle request inline and no additional actors are needed. 
 
 ### Features ###
 * Each type of resource and method can have different numbers of actors - easy to optimise performance
