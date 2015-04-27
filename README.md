@@ -21,6 +21,14 @@ The database underneath is mysql, but it can be easily switch to any other which
 * Set up user and database on mysql server
 * Edit db.conf in resources to configure db connection
 
+### Adding new REST API ###
+* take a look at com.vixxx123.scalasprayslickexample.exampleapi.person.PersonApi as example
+* create new object/class which inherits from Api
+* create new routing class - which inherits from BaseResourceApi
+* that's it - you are good to go
+* PersonApi class is just an example you don't have to implement handling incoming request same way,
+but I think it's quite good design. It give a possibility to configure number of workers per request type etc.
+
 ### Features ###
 * Each type of resource and method can have different numbers of actors - easy to optimise performance
 * Fully based on Akka
@@ -33,7 +41,7 @@ The database underneath is mysql, but it can be easily switch to any other which
 
 ### How to run ###
 * mvn clean install
-* mvn scala:run -DmainClass=com.vixxx123.Rest
+* mvn scala:run -DmainClass=com.vixxx123.scalasprayslickexample.RestExampleApp
 
 
 ### Have fun ###
