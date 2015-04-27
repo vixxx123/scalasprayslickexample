@@ -23,10 +23,15 @@ The database underneath is mysql, but it can be easily switch to any other which
 
 ### Adding new REST API ###
 * take a look at com.vixxx123.scalasprayslickexample.exampleapi.person.PersonApi as example
-* create new object/class which inherits from Api
 * create new routing class - which inherits from BaseResourceApi
+    - method init should be used to initialize resource. It is run once on server start up. I use it to create db tables if they don't exists yet
+    - method route - should define REST route for new API
+* create new object/class which inherits from
+    - create method should return new routing class (created in previous step)
+* in RestExampleApi object add your Api class to list.
 * that's it - you are good to go
-* PersonApi class is just an example you don't have to implement handling incoming request same way,
+
+PersonApi class is just an example you don't have to implement handling incoming request same way,
 but I think it's quite good design. It give a possibility to configure number of workers per request type etc.
 
 ### Features ###
