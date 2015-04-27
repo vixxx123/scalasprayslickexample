@@ -31,7 +31,7 @@ class CompanyApi(actorContext: ActorContext) extends BaseResourceApi with Loggin
    * Handler val names must be unique in the system - all
    */
 
-  private val companyDao = new CompanyDb
+  private val companyDao = new CompanyDao
 
   private val companyCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(CreateActor.props(companyDao)), CreateActor.Name)
   private val companyPutHandler = actorContext.actorOf(RoundRobinPool(5).props(UpdateActor.props(companyDao)), UpdateActor.Name)
