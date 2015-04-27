@@ -1,6 +1,6 @@
 package com.vixxx123.scalasprayslickexample.integration
 
-import com.vixxx123.scalasprayslickexample.exampleapi.company.CompanyDb
+import com.vixxx123.scalasprayslickexample.exampleapi.company.CompanyDao
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
@@ -11,7 +11,7 @@ import spray.routing.RequestContext
  * Created by Wiktor Tychulski on 2015-04-24.
  */
 trait Mocking extends MockitoSugar {
-  val companyDb = mock[CompanyDb]
+  val companyDb = mock[CompanyDao]
   val ctx = mock[RequestContext]
   val httpReq = mock[HttpRequest]
 

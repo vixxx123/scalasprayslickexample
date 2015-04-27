@@ -14,7 +14,7 @@ case class PatchMessage(ctx: RequestContext, companyId: Int)
 /**
  * Actor handling update messages
  */
-class UpdateActor(companyDb: CompanyDb) extends Actor with PublishWebSocket with Logging with HttpRequestHelper{
+class UpdateActor(companyDao: CompanyDao) extends Actor with PublishWebSocket with Logging with HttpRequestHelper{
 
 
   override def receive: Receive = {
@@ -22,7 +22,7 @@ class UpdateActor(companyDb: CompanyDb) extends Actor with PublishWebSocket with
     //handling put message
     case PutMessage(ctx, person) =>
 
-      val updated = companyDb.update(person)
+      val updated = companyDao.update(person)
       if (updated == 1) {
         ctx.complete(person)
         publishAll(UpdatePublishMessage(ResourceName, getRequestUri(ctx), person))
@@ -31,13 +31,15 @@ class UpdateActor(companyDb: CompanyDb) extends Actor with PublishWebSocket with
       }
 
 
-    //handling patch message
+    // handling patch message - shitty implementation - don't use it at home :)
+    // it should use json notation
+    // for reference https://tools.ietf.org/html/rfc6902
     case PatchMessage(ctx, id) =>
       val localCtx = ctx
-      val updateStatement = s"${SqlUtil.patch2updateStatement(companyDb.tableName, getEntityDataAsString(ctx))} ${SqlUtil.whereById(id)}"
-      val updated = companyDb.runQuery(updateStatement)
+      val updateStatement = s"${SqlUtil.patch2updateStatement(companyDao.tableName, getEntityDataAsString(ctx))} ${SqlUtil.whereById(id)}"
+      val updated = companyDao.runQuery(updateStatement)
       if (updated == 1) {
-        val person = companyDb.getById(id)
+        val person = companyDao.getById(id)
         localCtx.complete(person)
         publishAll(UpdatePublishMessage(ResourceName, getRequestUri(ctx), person))
       }
@@ -48,5 +50,5 @@ class UpdateActor(companyDb: CompanyDb) extends Actor with PublishWebSocket with
 
 object UpdateActor {
   val Name = s"${ResourceName}PutRouter"
-  def props(companyDb: CompanyDb) = Props(classOf[UpdateActor], companyDb)
+  def props(companyDb: CompanyDao) = Props(classOf[UpdateActor], companyDb)
 }

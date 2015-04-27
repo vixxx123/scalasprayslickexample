@@ -12,7 +12,7 @@ case class GetMessage(ctx: RequestContext, userId: Option[Int])
 /**
  * Actor handling person get message
  */
-class GetActor(personDb: PersonDb) extends Actor with Logging with PublishWebSocket {
+class GetActor(personDao: PersonDao) extends Actor with Logging with PublishWebSocket {
 
   override val logTag: String = getClass.getName
 
@@ -21,18 +21,18 @@ class GetActor(personDb: PersonDb) extends Actor with Logging with PublishWebSoc
     // get all persons
     case GetMessage(ctx, None) =>
       L.info("Getting all persons")
-      ctx.complete(personDb.getAll)
+      ctx.complete(personDao.getAll)
 
 
     // get person by id
     case GetMessage(ctx, Some(id)) =>
       L.info(s"Getting person id = $id")
       val localCtx = ctx
-      localCtx.complete(personDb.getById(id))
+      localCtx.complete(personDao.getById(id))
   }
 }
 
 object GetActor {
   val Name = s"${ResourceName}GetRouter"
-  def props(personDb: PersonDb) = Props(classOf[GetActor], personDb)
+  def props(personDb: PersonDao) = Props(classOf[GetActor], personDb)
 }

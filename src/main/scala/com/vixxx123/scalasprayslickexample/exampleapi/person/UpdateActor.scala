@@ -14,7 +14,7 @@ case class PatchMessage(ctx: RequestContext, userId: Int)
 /**
  * Actor handling update messages
  */
-class UpdateActor(personDb: PersonDb) extends Actor with PublishWebSocket with Logging with HttpRequestHelper {
+class UpdateActor(personDao: PersonDao) extends Actor with PublishWebSocket with Logging with HttpRequestHelper {
 
 
   override def receive: Receive = {
@@ -22,7 +22,7 @@ class UpdateActor(personDb: PersonDb) extends Actor with PublishWebSocket with L
     //handling put message
     case PutMessage(ctx, person) =>
 
-      val updated = personDb.update(person)
+      val updated = personDao.update(person)
       if (updated == 1) {
         ctx.complete(person)
         publishAll(UpdatePublishMessage(ResourceName, getRequestUri(ctx), person))
@@ -34,10 +34,10 @@ class UpdateActor(personDb: PersonDb) extends Actor with PublishWebSocket with L
     //handling patch message
     case PatchMessage(ctx, id) =>
       val localCtx = ctx
-      val updateStatement = s"${SqlUtil.patch2updateStatement(personDb.tableName, getEntityDataAsString(ctx))} ${SqlUtil.whereById(id)}"
-      val updated = personDb.runQuery(updateStatement)
+      val updateStatement = s"${SqlUtil.patch2updateStatement(personDao.tableName, getEntityDataAsString(ctx))} ${SqlUtil.whereById(id)}"
+      val updated = personDao.runQuery(updateStatement)
       if (updated == 1) {
-        val person = personDb.getById(id)
+        val person = personDao.getById(id)
         localCtx.complete(person)
         publishAll(UpdatePublishMessage(ResourceName, getRequestUri(ctx), person))
       }
@@ -48,5 +48,5 @@ class UpdateActor(personDb: PersonDb) extends Actor with PublishWebSocket with L
 
 object UpdateActor {
   val Name = s"${ResourceName}PutRouter"
-  def props(personDb: PersonDb) = Props(classOf[UpdateActor], personDb)
+  def props(personDb: PersonDao) = Props(classOf[UpdateActor], personDb)
 }

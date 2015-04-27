@@ -13,11 +13,11 @@ case class DeleteResult(deleted: Boolean)
 /**
  * Actor handling delete message
  */
-class DeleteActor(personDb: PersonDb) extends Actor with PublishWebSocket with Logging {
+class DeleteActor(personDao: PersonDao) extends Actor with PublishWebSocket with Logging {
 
   override def receive: Receive = {
     case DeleteMessage(ctx, personId) =>
-      val count = personDb.deleteById(personId)
+      val count = personDao.deleteById(personId)
       ctx.complete(DeleteResult(count == 1))
       publishAll(DeletePublishMessage(ResourceName, personId))
 
@@ -28,5 +28,5 @@ class DeleteActor(personDb: PersonDb) extends Actor with PublishWebSocket with L
 
 object DeleteActor {
   val Name = s"${ResourceName}DeleteRouter"
-  def props(personDb: PersonDb) = Props(classOf[DeleteActor], personDb)
+  def props(personDb: PersonDao) = Props(classOf[DeleteActor], personDb)
 }

@@ -13,7 +13,7 @@ case class CreateMessage(ctx: RequestContext, person: Company)
 /**
  * Actor handling person create message
  */
-class CreateActor(companyDb: CompanyDb) extends Actor with Logging with PublishWebSocket with HttpRequestHelper with EntityHelper  {
+class CreateActor(companyDao: CompanyDao) extends Actor with Logging with PublishWebSocket with HttpRequestHelper with EntityHelper  {
 
   override val logTag = getClass.getName
 
@@ -21,7 +21,7 @@ class CreateActor(companyDb: CompanyDb) extends Actor with Logging with PublishW
 
     case CreateMessage(ctx, company) =>
       try {
-        val added = company.copy(id = Some(companyDb.create(company)))
+        val added = company.copy(id = Some(companyDao.create(company)))
         ctx.complete(added)
         publishAll(CreatePublishMessage(ResourceName, entityUri(getRequestUri(ctx), added), added))
         L.debug(s"Company create success")
@@ -35,5 +35,5 @@ class CreateActor(companyDb: CompanyDb) extends Actor with Logging with PublishW
 
 object CreateActor {
   val Name = s"${ResourceName}CreateRouter"
-  def props(companyDb: CompanyDb) = Props(classOf[CreateActor], companyDb)
+  def props(companyDb: CompanyDao) = Props(classOf[CreateActor], companyDb)
 }

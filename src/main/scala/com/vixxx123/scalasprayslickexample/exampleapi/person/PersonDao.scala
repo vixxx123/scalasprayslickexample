@@ -6,7 +6,7 @@ import scala.slick.driver.MySQLDriver.simple._
 /**
  * Created by WiktorT on 24/04/2015.
  */
-class PersonDb extends BaseDbEntity[Person, PersonT]("person", TableQuery[PersonT])
+class PersonDao extends BaseDbEntity[Person, PersonT]("person", TableQuery[PersonT])
 
 class PersonT(tag: Tag) extends BaseT[Person](tag, "person") {
   def name: Column[String] = column[String]("name")
