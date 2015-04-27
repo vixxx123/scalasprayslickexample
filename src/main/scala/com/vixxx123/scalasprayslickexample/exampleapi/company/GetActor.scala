@@ -34,5 +34,5 @@ class GetActor(companyDao: CompanyDao) extends Actor with Logging with PublishWe
 
 object GetActor {
   val Name = s"${ResourceName}GetRouter"
-  def props(companyDb: CompanyDao) = Props(classOf[GetActor], companyDb)
+  def props(companyDao: CompanyDao) = Props(classOf[GetActor], companyDao)
 }

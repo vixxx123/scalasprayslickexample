@@ -17,6 +17,7 @@ class DeleteActor(personDao: PersonDao) extends Actor with PublishWebSocket with
 
   override def receive: Receive = {
     case DeleteMessage(ctx, personId) =>
+      L.debug(s"deleting person $personId")
       val count = personDao.deleteById(personId)
       ctx.complete(DeleteResult(count == 1))
       publishAll(DeletePublishMessage(ResourceName, personId))
@@ -28,5 +29,5 @@ class DeleteActor(personDao: PersonDao) extends Actor with PublishWebSocket with
 
 object DeleteActor {
   val Name = s"${ResourceName}DeleteRouter"
-  def props(personDb: PersonDao) = Props(classOf[DeleteActor], personDb)
+  def props(personDao: PersonDao) = Props(classOf[DeleteActor], personDao)
 }

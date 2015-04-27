@@ -21,7 +21,7 @@ class PersonApi(actorContext: ActorContext) extends BaseResourceApi with Logging
   val personCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(CreateActor.props(personDao)), CreateActor.Name)
   val personPutHandler = actorContext.actorOf(RoundRobinPool(5).props(UpdateActor.props(personDao)), UpdateActor.Name)
   val personGetHandler = actorContext.actorOf(RoundRobinPool(20).props(GetActor.props(personDao)), GetActor.Name)
-  val personDeleteHandler = actorContext.actorOf(RoundRobinPool(20).props(DeleteActor.props(personDao)), DeleteActor.Name)
+  val personDeleteHandler = actorContext.actorOf(RoundRobinPool(2).props(DeleteActor.props(personDao)), DeleteActor.Name)
 
   override val logTag: String = getClass.getName
 

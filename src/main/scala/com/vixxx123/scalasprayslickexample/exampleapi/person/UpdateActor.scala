@@ -48,5 +48,5 @@ class UpdateActor(personDao: PersonDao) extends Actor with PublishWebSocket with
 
 object UpdateActor {
   val Name = s"${ResourceName}PutRouter"
-  def props(personDb: PersonDao) = Props(classOf[UpdateActor], personDb)
+  def props(personDao: PersonDao) = Props(classOf[UpdateActor], personDao)
 }

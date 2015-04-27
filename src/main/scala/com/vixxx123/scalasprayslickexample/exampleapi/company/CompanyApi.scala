@@ -25,7 +25,7 @@ class CompanyApi(actorContext: ActorContext) extends BaseResourceApi with Loggin
   private val companyCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(CreateActor.props(companyDao)), CreateActor.Name)
   private val companyPutHandler = actorContext.actorOf(RoundRobinPool(5).props(UpdateActor.props(companyDao)), UpdateActor.Name)
   private val companyGetHandler = actorContext.actorOf(RoundRobinPool(20).props(GetActor.props(companyDao)), GetActor.Name)
-  private val companyDeleteHandler = actorContext.actorOf(RoundRobinPool(20).props(DeleteActor.props(companyDao)), DeleteActor.Name)
+  private val companyDeleteHandler = actorContext.actorOf(RoundRobinPool(2).props(DeleteActor.props(companyDao)), DeleteActor.Name)
 
   override val logTag: String = getClass.getName
 
@@ -57,6 +57,7 @@ class CompanyApi(actorContext: ActorContext) extends BaseResourceApi with Loggin
                 ctx => companyPutHandler ! PutMessage(ctx, entity.copy(id = Some(entityId)))
               }
             } ~ delete {
+              L.debug("delete")
               ctx => companyDeleteHandler ! DeleteMessage(ctx, entityId)
             } ~ patch {
               ctx => companyPutHandler ! PatchMessage(ctx, entityId)

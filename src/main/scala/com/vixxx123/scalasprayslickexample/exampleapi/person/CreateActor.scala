@@ -36,5 +36,5 @@ class CreateActor(personDao: PersonDao) extends Actor with Logging with PublishW
 
 object CreateActor {
   val Name = s"${ResourceName}CreateRouter"
-  def props(personDb: PersonDao) = Props(classOf[CreateActor], personDb)
+  def props(personDao: PersonDao) = Props(classOf[CreateActor], personDao)
 }
