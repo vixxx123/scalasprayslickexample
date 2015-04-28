@@ -1,3 +1,8 @@
+/**
+ * Created by Wiktor Tychulski on 2015-04-24.
+ *
+ * Created on 2015-04-24
+ */
 package com.vixxx123.scalasprayslickexample.database
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
@@ -8,9 +13,7 @@ import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.jdbc.{StaticQuery => Q}
 import scala.slick.jdbc.meta.MTable
 
-/**
- * Created by WiktorT on 24/04/2015.
- */
+
 class BaseDbEntity[T <: BaseEntity, R <: BaseT[T]](val tableName: String, tableQuery: TableQuery[R]) extends DatabaseAccess{
 
   val createReturningId = tableQuery returning tableQuery.map{item => item.id}

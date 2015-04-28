@@ -1,3 +1,9 @@
+/**
+ * Created by Wiktor Tychulski on 2015-04-24.
+ *
+ * Created on 2015-04-24
+ */
+
 package com.vixxx123.scalasprayslickexample.integration
 
 import java.util.concurrent.TimeUnit
@@ -17,10 +23,6 @@ import spray.client.pipelining._
 import spray.httpx.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
 
-
-/**
- * Created by Wiktor Tychulski on 2015-04-24.
- */
 @RunWith(classOf[JUnitRunner])
 class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
 
@@ -66,7 +68,7 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
     assert(res.id.nonEmpty, "Id shouldn't be empty")
   }
 
-  it should "answer with 404 when retreiving non existing company" in {
+  it should "answer with 404 when retrieving non existing company" in {
 
     val pipeline: HttpRequest => Future[HttpResponse] = (
       // we want to get json
@@ -78,7 +80,7 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
     val request = Get("http://localhost:8080/company/2")
     val response: Future[HttpResponse] = pipeline(request)
     val res = Await.result(response, timeout.duration)
-    assert(res.status.intValue == 404, "status code should be 404 when retreiving non existing entity")
+    assert(res.status.intValue == 404, "status code should be 404 when retrieving non existing entity")
   }
 
   it should "be able to retrieve all companies" in {

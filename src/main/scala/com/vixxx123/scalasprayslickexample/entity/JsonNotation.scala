@@ -1,14 +1,18 @@
+/**
+ * Created by Wiktor Tychulski on 2015-04-24.
+ *
+ * Created on 2015-04-24
+ */
 package com.vixxx123.scalasprayslickexample.entity
 
-/**
- * Created by WiktorT on 28/04/2015.
- */
+import com.vixxx123.scalasprayslickexample.rest.UpdateException
+
 case class JsonNotation(op: String, path: String, value: Option[String]){
 
   def getSolidOperation: Operation = op match {
     case Operation.Replace => Replace
     case Operation.Remove => Remove
-    case _: String => ???
+    case _: String => throw new UpdateException("patch operation not implemented " + op)
   }
 }
 

@@ -1,10 +1,12 @@
+/**
+ * Created by Wiktor Tychulski on 2015-04-24.
+ *
+ * Created on 2015-04-24
+ */
 package com.vixxx123.scalasprayslickexample.rest
 
 import spray.routing.RequestContext
 
-/**
- * Created by WiktorT on 24/04/2015.
- */
 trait HttpRequestHelper {
 
   def getRequestUri(ctx: RequestContext): String = ctx.request.uri.toString()

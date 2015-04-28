@@ -1,3 +1,9 @@
+/**
+ * Created by Wiktor Tychulski on 2015-04-24.
+ *
+ * Created on 2015-04-24
+ */
+
 package com.vixxx123.scalasprayslickexample.rest
 
 import akka.actor.{ActorSystem, PoisonPill}
@@ -10,9 +16,6 @@ import spray.can.server.UHttp
 
 import scala.concurrent.duration._
 
-/**
- * Created by Wiktor Tychulski on 2014-11-16.
- */
 class Rest(actorSystem: ActorSystem, listOfApis: List[Api], loggers: List[BaseLogger]) {
   // we need an ActorSystem to host our application in
   implicit val system = actorSystem

@@ -1,8 +1,10 @@
+/**
+ * Created by Wiktor Tychulski on 2015-04-24.
+ *
+ * Created on 2015-04-24
+ */
 package com.vixxx123.scalasprayslickexample.entity
 
-/**
- * Created by WiktorT on 24/04/2015.
- */
 trait BaseEntity {
   val id: Option[Int]
   def getId: Int

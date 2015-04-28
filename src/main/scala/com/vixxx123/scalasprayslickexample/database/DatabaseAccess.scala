@@ -1,3 +1,8 @@
+/**
+ * Created by Wiktor Tychulski on 2015-04-24.
+ *
+ * Created on 2015-04-24
+ */
 package com.vixxx123.scalasprayslickexample.database
 
 import com.mchange.v2.c3p0.ComboPooledDataSource

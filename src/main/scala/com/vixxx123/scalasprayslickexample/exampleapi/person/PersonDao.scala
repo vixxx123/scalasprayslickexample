@@ -1,11 +1,14 @@
+/**
+ * Created by Wiktor Tychulski on 2015-04-24.
+ *
+ * Created on 2015-04-24
+ */
+
 package com.vixxx123.scalasprayslickexample.exampleapi.person
 
 import com.vixxx123.scalasprayslickexample.database.{BaseT, BaseDbEntity}
 import scala.slick.driver.MySQLDriver.simple._
 
-/**
- * Created by WiktorT on 24/04/2015.
- */
 class PersonDao extends BaseDbEntity[Person, PersonT]("person", TableQuery[PersonT])
 
 class PersonT(tag: Tag) extends BaseT[Person](tag, "person") {

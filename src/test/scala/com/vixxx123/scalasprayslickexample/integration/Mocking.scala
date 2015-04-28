@@ -1,3 +1,9 @@
+/**
+ * Created by Wiktor Tychulski on 2015-04-24.
+ *
+ * Created on 2015-04-24
+ */
+
 package com.vixxx123.scalasprayslickexample.integration
 
 import akka.actor.ActorContext
@@ -9,9 +15,6 @@ import org.mockito.stubbing.Answer
 import org.scalatest.mock.MockitoSugar
 
 
-/**
- * Created by Wiktor Tychulski on 2015-04-24.
- */
 trait Mocking extends MockitoSugar {
   val companyDb = mock[CompanyDao]
   val companyApi = mock[CompanyApiBuilder]
