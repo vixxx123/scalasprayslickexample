@@ -1,23 +1,28 @@
+/**
+ * Created by Wiktor Tychulski on 2015-04-24.
+ *
+ * Created on 2015-04-24
+ */
+
 package com.vixxx123.scalasprayslickexample.rest
 
 import akka.actor._
-import com.vixxx123.scalasprayslickexample.logger.{Logging, ConsoleLogger, Logger}
-import com.vixxx123.scalasprayslickexample.rest.company.CompanyApi
-import com.vixxx123.scalasprayslickexample.rest.person.PersonApi
-
+import com.vixxx123.scalasprayslickexample.entity.JsonNotation
+import com.vixxx123.scalasprayslickexample.logger.Logging
 import spray.routing._
-import spray.util.LoggingContext
+import spray.json.DefaultJsonProtocol._
 
 /**
  * Main Api service class
  */
-class ApiService extends Actor with Api with Logging {
+class ApiService(availableApis: List[Api]) extends Actor with HttpServiceBase with Logging {
 
-  init()
+  val apis = availableApis.map{_.create(context)}
+  apis.foreach(_.init())
+
+  val routing: Route = apis.foldLeft[Route](null)((a,b) => if (a == null) b.route() else {a ~ b.route()})
 
   override val logTag: String = getClass.getName
-
-  override implicit def actorRefFactory: ActorContext = context
 
   override def receive = runRoute(handleExceptions(new RestExceptionHandler().exceptionHandler){routing})
 
@@ -26,14 +31,18 @@ class ApiService extends Actor with Api with Logging {
 object ApiService {
   val ActorName = "api-root"
 
-  def props() = Props(classOf[ApiService])
+  def props(availableApis: List[Api]) = Props(classOf[ApiService], availableApis)
 }
 
 
-trait Api extends HttpService with PersonApi with CompanyApi {
-  val routing = userRoute ~ companyRoute
+trait Api {
+  def create(actorContext: ActorContext): BaseResourceApi
 }
 
-trait BaseResourceApi {
+trait BaseResourceApi extends HttpServiceBase{
+
+  implicit val JsonNotationFormat = jsonFormat3(JsonNotation)
+
   def init(): Unit = {}
+  def route(): Route
 }

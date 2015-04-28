@@ -1,3 +1,10 @@
+/**
+ * Created by Wiktor Tychulski on 2015-04-24.
+ *
+ * Created on 2015-04-24
+ */
+
+
 package com.vixxx123.scalasprayslickexample.util
 
 import java.io.StringWriter
@@ -20,15 +27,6 @@ object JsonUtil {
   mapper.registerModule(DefaultScalaModule)
   mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
   mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
-
-  def parseJson[T](json: String)(implicit ct: ClassTag[T]): T = {
-    try {
-      mapper.readValue(json, ct.runtimeClass).asInstanceOf[T]
-    }
-    catch {
-      case e: Exception => throw new Exception(ErrorMessage + e)
-    }
-  }
 
   def serialize(value: Any): String = {
     val writer = new StringWriter()

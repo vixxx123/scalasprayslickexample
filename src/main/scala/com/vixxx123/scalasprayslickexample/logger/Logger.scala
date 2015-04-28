@@ -1,7 +1,11 @@
+/**
+ * Created by Wiktor Tychulski on 2015-04-24.
+ *
+ * Created on 2015-04-24
+ */
 package com.vixxx123.scalasprayslickexample.logger
 
 import akka.actor.{Props, ActorSystem, Actor}
-import com.vixxx123.scalasprayslickexample.rest.Api
 
 class Logger(handler: List[BaseLogger]) extends Actor {
 
@@ -26,6 +30,11 @@ object Logger {
   val LoggerActorName = "Logger-Actor"
 
   def props(handlers: List[BaseLogger]) = Props(classOf[Logger], handlers)
+
+  def shutdown():Unit = {
+    LoggingActorSystem.shutdown()
+    LoggingActorSystem.awaitTermination()
+  }
 }
 
 

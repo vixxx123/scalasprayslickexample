@@ -1,4 +1,9 @@
-package com.vixxx123.scalasprayslickexample.rest.person
+/**
+ * Created by Wiktor Tychulski on 2015-04-24.
+ *
+ * Created on 2015-04-24
+ */
+package com.vixxx123.scalasprayslickexample.exampleapi.person
 
 import com.vixxx123.scalasprayslickexample.rest.RestException
 import spray.http.StatusCodes

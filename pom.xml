@@ -22,6 +22,10 @@
         <scalatest.verion>2.2.1</scalatest.verion>
         <typesafe.config.version>1.2.1</typesafe.config.version>
         <websocket.version>0.1.4</websocket.version>
+        <mockito.version>1.10.19</mockito.version>
+        <surefire.plugin.version>2.18.1</surefire.plugin.version>
+        <junit.version>4.11</junit.version>
+        <oauth.version>0.13.3</oauth.version>
     </properties>
 
     <repositories>
@@ -85,6 +89,12 @@
         </dependency>
 
         <dependency>
+            <groupId>io.spray</groupId>
+            <artifactId>spray-client_${scala.version.major}</artifactId>
+            <version>${spray.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.typesafe.slick</groupId>
             <artifactId>slick_${scala.version.major}</artifactId>
             <version>${slick.version}</version>
@@ -114,6 +124,19 @@
         </dependency>
 
         <dependency>
+            <groupId>com.wandoulabs.akka</groupId>
+            <artifactId>spray-websocket_${scala.version.major}</artifactId>
+            <version>${websocket.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nulab-inc</groupId>
+            <artifactId>scala-oauth2-core_${scala.version.major}</artifactId>
+            <version>${oauth.version}</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
@@ -124,12 +147,19 @@
             <version>${scalatest.verion}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
-            <groupId>com.wandoulabs.akka</groupId>
-            <artifactId>spray-websocket_${scala.version.major}</artifactId>
-            <version>${websocket.version}</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 
@@ -183,6 +213,20 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.plugin.version}</version>
+                <configuration>
+                    <useFile>true</useFile>
+                    <disableXmlReport>false</disableXmlReport>
+                    <includes>
+                        <include>**/*Test.*</include>
+                        <include>**/*Spec.*</include>
+                    </includes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
