@@ -1,6 +1,7 @@
 package com.vixxx123.scalasprayslickexample.exampleapi.company
 
 import com.vixxx123.scalasprayslickexample.database.{BaseT, BaseDbEntity}
+import com.vixxx123.scalasprayslickexample.entity.JsonNotation
 import scala.slick.driver.MySQLDriver.simple._
 
 /**

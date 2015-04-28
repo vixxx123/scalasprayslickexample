@@ -1,8 +1,10 @@
 package com.vixxx123.scalasprayslickexample.rest
 
 import akka.actor._
+import com.vixxx123.scalasprayslickexample.entity.JsonNotation
 import com.vixxx123.scalasprayslickexample.logger.Logging
 import spray.routing._
+import spray.json.DefaultJsonProtocol._
 
 /**
  * Main Api service class
@@ -32,6 +34,8 @@ trait Api {
 }
 
 trait BaseResourceApi extends HttpServiceBase{
+
+  implicit val JsonNotationFormat = jsonFormat3(JsonNotation)
 
   def init(): Unit = {}
   def route(): Route

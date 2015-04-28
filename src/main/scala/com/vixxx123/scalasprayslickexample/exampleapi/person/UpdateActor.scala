@@ -1,15 +1,16 @@
 package com.vixxx123.scalasprayslickexample.exampleapi.person
 
 import akka.actor.{Props, Actor}
+import com.vixxx123.scalasprayslickexample.entity.JsonNotation
 import com.vixxx123.scalasprayslickexample.logger.Logging
-import com.vixxx123.scalasprayslickexample.rest.{HttpRequestHelper, EntityNotFound}
+import com.vixxx123.scalasprayslickexample.rest.{UpdateException, HttpRequestHelper, EntityNotFound}
 import com.vixxx123.scalasprayslickexample.util.SqlUtil
 import com.vixxx123.scalasprayslickexample.websocket.{UpdatePublishMessage, PublishWebSocket}
 import spray.routing.RequestContext
 import spray.httpx.SprayJsonSupport._
 
 case class PutMessage(ctx: RequestContext, user: Person)
-case class PatchMessage(ctx: RequestContext, userId: Int)
+case class PatchMessage(ctx: RequestContext, patch: List[JsonNotation], userId: Int)
 
 /**
  * Actor handling update messages
@@ -32,17 +33,20 @@ class UpdateActor(personDao: PersonDao) extends Actor with PublishWebSocket with
 
 
     //handling patch message
-    case PatchMessage(ctx, id) =>
-      val localCtx = ctx
-      val updateStatement = s"${SqlUtil.patch2updateStatement(personDao.tableName, getEntityDataAsString(ctx))} ${SqlUtil.whereById(id)}"
-      val updated = personDao.runQuery(updateStatement)
-      if (updated == 1) {
-        val person = personDao.getById(id)
-        localCtx.complete(person)
-        publishAll(UpdatePublishMessage(ResourceName, getRequestUri(ctx), person))
-      } else {
-        ctx.complete(EntityNotFound(s"Not found person id $id"))
-      }
+    case PatchMessage(ctx, patch, id) =>
+    try{
+        val updated = personDao.patch(patch, id)
+        if (updated.forall(_ == 1)) {
+          val person = personDao.getById(id)
+          ctx.complete(person)
+          publishAll(UpdatePublishMessage(ResourceName, getRequestUri(ctx), person))
+        } else {
+          ctx.complete(EntityNotFound(s"Not found person id $id"))
+        }
+    } catch {
+      case e: UpdateException =>
+        ctx.complete(e)
+    }
   }
 
   override val logTag: String = getClass.getName

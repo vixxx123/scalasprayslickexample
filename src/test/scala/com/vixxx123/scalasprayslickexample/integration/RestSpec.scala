@@ -32,23 +32,25 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
 
 
   "Rest company api" should "be able to create new company" in {
-    val pipeline: HttpRequest => Future[Company] = (
-      // we want to get json
-      ((_:HttpRequest).mapEntity( _.flatMap( f => HttpEntity(
-        f.contentType.withMediaType(MediaTypes.`application/json`),f.data))))
-        ~> sendReceive
-        ~> unmarshal[Company]
-    )
+      val pipeline: HttpRequest => Future[Company] = (
+        // we want to get json
+        ((_: HttpRequest).mapEntity(_.flatMap(f => HttpEntity(
+          f.contentType.withMediaType(MediaTypes.`application/json`), f.data))))
+          ~> sendReceive
+          ~> unmarshal[Company]
+        )
 
-    val data = """{"name": "test company" , "address": "test address"}"""
-    val request = Post("http://localhost:8080/company", data)
-    val response: Future[Company] = pipeline(request)
-    val res = Await.result(response, timeout.duration)
-    println(res)
-    assert(res.id.nonEmpty, "Id should be added after creating")
-  }
+      val data = """{"name": "test company" , "address": "test address"}"""
+      val request = Post("http://localhost:8080/company", data)
+      val response: Future[Company] = pipeline(request)
+      val res = Await.result(response, timeout.duration)
+      assert(res.id.nonEmpty, "Id should be added after creating")
+    }
 
-  "Rest company api" should "be able to retrieve company" in {
+
+
+
+  it should "be able to retrieve company" in {
 
     val pipeline: HttpRequest => Future[Company] = (
       // we want to get json
@@ -61,11 +63,10 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
     val request = Get("http://localhost:8080/company/1")
     val response: Future[Company] = pipeline(request)
     val res = Await.result(response, timeout.duration)
-    println(res)
     assert(res.id.nonEmpty, "Id shouldn't be empty")
   }
 
-  "Rest company api" should "answer with 404 when retreiving non existing company" in {
+  it should "answer with 404 when retreiving non existing company" in {
 
     val pipeline: HttpRequest => Future[HttpResponse] = (
       // we want to get json
@@ -77,11 +78,10 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
     val request = Get("http://localhost:8080/company/2")
     val response: Future[HttpResponse] = pipeline(request)
     val res = Await.result(response, timeout.duration)
-    println(res)
     assert(res.status.intValue == 404, "status code should be 404 when retreiving non existing entity")
   }
 
-  "Rest company api" should "be able to retrieve all companies" in {
+  it should "be able to retrieve all companies" in {
 
     val pipeline: HttpRequest => Future[List[Company]] = (
       // we want to get json
@@ -94,11 +94,10 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
     val request = Get("http://localhost:8080/company")
     val response: Future[List[Company]] = pipeline(request)
     val res = Await.result(response, timeout.duration)
-    println(res)
     assert(res.size == 2, "Id shouldn't be empty")
   }
 
-  "Rest company api" should "be able to delete company" in {
+  it should "be able to delete company" in {
 
     val pipeline: HttpRequest => Future[HttpResponse] = (
       // we want to get json
@@ -110,11 +109,10 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
     val request = Delete("http://localhost:8080/company/1")
     val response: Future[HttpResponse] = pipeline(request)
     val res = Await.result(response, timeout.duration)
-    println(res)
     assert(res.status.intValue == 200, "Response should be ok")
   }
 
-  "Rest company api" should "should answer with 404 when deleting non existing entity" in {
+  it should "should answer with 404 when deleting non existing entity" in {
 
     val pipeline: HttpRequest => Future[HttpResponse] = (
       // we want to get json
@@ -126,7 +124,71 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
     val request = Delete("http://localhost:8080/company/2")
     val response: Future[HttpResponse] = pipeline(request)
     val res = Await.result(response, timeout.duration)
-    println(res)
+    assert(res.status.intValue == 404, "Response should be 404 because company doesnt exist")
+  }
+
+
+  it should "be able to update company" in {
+
+    val pipeline: HttpRequest => Future[HttpResponse] = (
+      // we want to get json
+      ((_:HttpRequest).mapEntity( _.flatMap( f => HttpEntity(
+        f.contentType.withMediaType(MediaTypes.`application/json`),f.data))))
+        ~> sendReceive
+      )
+
+    val data = """{"name": "trata", "address": "qqqqqqqq"}"""
+    val request = Put("http://localhost:8080/company/1", data)
+    val response: Future[HttpResponse] = pipeline(request)
+    val res = Await.result(response, timeout.duration)
+    assert(res.status.intValue == 200, "Response should be ok")
+  }
+
+  it should "should answer with 404 when updating non existing entity" in {
+
+    val pipeline: HttpRequest => Future[HttpResponse] = (
+      // we want to get json
+      ((_:HttpRequest).mapEntity( _.flatMap( f => HttpEntity(
+        f.contentType.withMediaType(MediaTypes.`application/json`),f.data))))
+        ~> sendReceive
+      )
+
+    val data = """{"name": "trata", "address": "qqqqqqqq"}"""
+    val request = Put("http://localhost:8080/company/2", data)
+    val response: Future[HttpResponse] = pipeline(request)
+    val res = Await.result(response, timeout.duration)
+    assert(res.status.intValue == 404, "Response should be 404 because company doesnt exist")
+  }
+
+  it should "be able to patch company" in {
+
+    val pipeline: HttpRequest => Future[HttpResponse] = (
+      // we want to get json
+      ((_:HttpRequest).mapEntity( _.flatMap( f => HttpEntity(
+        f.contentType.withMediaType(MediaTypes.`application/json`),f.data))))
+        ~> sendReceive
+      )
+
+    val data = """[{"op": "replace", "path": "/name", "value": "trata"}]"""
+    val request = Patch("http://localhost:8080/company/1", data)
+    val response: Future[HttpResponse] = pipeline(request)
+    val res = Await.result(response, timeout.duration)
+    assert(res.status.intValue == 200, "Response should be ok")
+  }
+
+  it should "should answer with 404 when patching non existing entity" in {
+
+    val pipeline: HttpRequest => Future[HttpResponse] = (
+      // we want to get json
+      ((_:HttpRequest).mapEntity( _.flatMap( f => HttpEntity(
+        f.contentType.withMediaType(MediaTypes.`application/json`),f.data))))
+        ~> sendReceive
+      )
+
+    val data = """[{"op": "replace", "path": "/name", "value": "trata"}]"""
+    val request = Patch("http://localhost:8080/company/2", data)
+    val response: Future[HttpResponse] = pipeline(request)
+    val res = Await.result(response, timeout.duration)
     assert(res.status.intValue == 404, "Response should be 404 because company doesnt exist")
   }
 

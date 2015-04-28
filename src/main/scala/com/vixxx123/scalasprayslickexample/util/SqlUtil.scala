@@ -1,17 +1,25 @@
 package com.vixxx123.scalasprayslickexample.util
 
+import com.vixxx123.scalasprayslickexample.entity.{Remove, Replace, JsonNotation}
+import com.vixxx123.scalasprayslickexample.rest.UpdateException
+
 
 object SqlUtil {
 
-  def patch2updateStatement(table: String, jsonParams: String): String = {
-    val params = JsonUtil.parseJson[Map[String, Any]](jsonParams)
+  def patch2updateStatement(table: String, patch: JsonNotation): String = {
     val sb = new StringBuilder
-    sb.append(s"Update $table SET ")
-    var joinStr = ""
-    params.foreach {
-      item =>
-        sb.append(s"$joinStr ${item._1} = ${wrapValue(item._2)}")
-        joinStr = ","
+
+    patch.getSolidOperation match {
+      case Replace =>
+        sb.append(s"Update $table SET ")
+        sb.append(s"${patch.path.substring(1)} = ${wrapValue(patch.value.get)}")
+
+      case Remove =>
+        sb.append(s"Update $table SET ")
+        sb.append(s"${patch.path.substring(1)} = NULL")
+
+      case _: Any =>
+        throw new UpdateException("Not supported operation: " + patch.op)
     }
 
     sb.toString()

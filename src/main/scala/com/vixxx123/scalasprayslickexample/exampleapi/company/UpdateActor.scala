@@ -1,15 +1,15 @@
 package com.vixxx123.scalasprayslickexample.exampleapi.company
 
 import akka.actor.{Props, Actor}
+import com.vixxx123.scalasprayslickexample.entity.JsonNotation
 import com.vixxx123.scalasprayslickexample.logger.Logging
-import com.vixxx123.scalasprayslickexample.rest.{HttpRequestHelper, EntityNotFound}
-import com.vixxx123.scalasprayslickexample.util.SqlUtil
+import com.vixxx123.scalasprayslickexample.rest.{UpdateException, HttpRequestHelper, EntityNotFound}
 import com.vixxx123.scalasprayslickexample.websocket.{PublishWebSocket, UpdatePublishMessage}
 import spray.httpx.SprayJsonSupport._
 import spray.routing.RequestContext
 
 case class PutMessage(ctx: RequestContext, company: Company)
-case class PatchMessage(ctx: RequestContext, companyId: Int)
+case class PatchMessage(ctx: RequestContext, patch: List[JsonNotation], companyId: Int)
 
 /**
  * Actor handling update messages
@@ -30,20 +30,19 @@ class UpdateActor(companyDao: CompanyDao) extends Actor with PublishWebSocket wi
         ctx.complete(EntityNotFound(s"Not found company id ${company.id}"))
       }
 
-
-    // handling patch message - shitty implementation - don't use it at home :)
-    // it should use json notation
-    // for reference https://tools.ietf.org/html/rfc6902
-    case PatchMessage(ctx, id) =>
-      val localCtx = ctx
-      val updateStatement = s"${SqlUtil.patch2updateStatement(companyDao.tableName, getEntityDataAsString(ctx))} ${SqlUtil.whereById(id)}"
-      val updated = companyDao.runQuery(updateStatement)
-      if (updated == 1) {
-        val company = companyDao.getById(id)
-        localCtx.complete(company)
-        publishAll(UpdatePublishMessage(ResourceName, getRequestUri(ctx), company))
-      } else {
-        ctx.complete(EntityNotFound(s"Not found company id $id"))
+    case PatchMessage(ctx, patch, id) =>
+      try {
+        val updated = companyDao.patch(patch, id)
+        if (updated.forall(_ == 1)) {
+          val company = companyDao.getById(id)
+          ctx.complete(company)
+          publishAll(UpdatePublishMessage(ResourceName, getRequestUri(ctx), company))
+        } else {
+          ctx.complete(EntityNotFound(s"Not found company id $id"))
+        }
+      } catch {
+        case e: UpdateException =>
+          ctx.complete(e)
       }
   }
 

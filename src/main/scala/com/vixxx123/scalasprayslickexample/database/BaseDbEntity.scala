@@ -1,6 +1,9 @@
 package com.vixxx123.scalasprayslickexample.database
 
-import com.vixxx123.scalasprayslickexample.entity.BaseEntity
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException
+import com.vixxx123.scalasprayslickexample.entity._
+import com.vixxx123.scalasprayslickexample.rest.UpdateException
+import com.vixxx123.scalasprayslickexample.util.SqlUtil
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.jdbc.{StaticQuery => Q}
 import scala.slick.jdbc.meta.MTable
@@ -38,6 +41,22 @@ class BaseDbEntity[T <: BaseEntity, R <: BaseT[T]](val tableName: String, tableQ
     connectionPool withSession {
       implicit session =>
         tableQuery.filter(_.id === entity.id).update(entity)
+    }
+  }
+
+  def patch(listOfPatches: List[JsonNotation], id: Int): List[Int] = {
+    connectionPool withTransaction {
+      implicit transaction =>
+        listOfPatches.map {
+          patch =>
+            val updateStatement = s"${SqlUtil.patch2updateStatement(tableName, patch)} ${SqlUtil.whereById(id)}"
+            try {
+              Q.updateNA(updateStatement).first
+            } catch {
+              case e: MySQLIntegrityConstraintViolationException =>
+                throw UpdateException(e.getMessage)
+            }
+        }
     }
   }
 

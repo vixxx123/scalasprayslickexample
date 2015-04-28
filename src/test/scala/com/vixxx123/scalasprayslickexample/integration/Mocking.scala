@@ -47,4 +47,27 @@ trait Mocking extends MockitoSugar {
       }
     }
   })
+
+  when(companyDb.update(any())).thenAnswer(new Answer[Int] {
+    override def answer(invocationOnMock: InvocationOnMock): Int = {
+      val args = invocationOnMock.getArguments
+      if (args(0).asInstanceOf[Company].getId == 1){
+        1
+      } else {
+        0
+      }
+    }
+  })
+
+
+  when(companyDb.patch(any(), any())).thenAnswer(new Answer[List[Int]] {
+    override def answer(invocationOnMock: InvocationOnMock): List[Int] = {
+      val args = invocationOnMock.getArguments
+      if (args(1).asInstanceOf[Int] == 1){
+        List(1)
+      } else {
+        List(0)
+      }
+    }
+  })
 }

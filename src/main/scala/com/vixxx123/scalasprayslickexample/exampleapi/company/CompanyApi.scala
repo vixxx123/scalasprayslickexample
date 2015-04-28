@@ -1,10 +1,12 @@
 package com.vixxx123.scalasprayslickexample.exampleapi.company
 
-import akka.actor.{ActorContext, Props}
+import akka.actor.ActorContext
 import akka.routing.RoundRobinPool
+import com.vixxx123.scalasprayslickexample.entity.JsonNotation
 import com.vixxx123.scalasprayslickexample.logger.Logging
 import com.vixxx123.scalasprayslickexample.rest.{Api, BaseResourceApi}
 import spray.httpx.SprayJsonSupport._
+import spray.json.DefaultJsonProtocol._
 
 /**
  * Company API main class
@@ -57,7 +59,9 @@ class CompanyApi(actorContext: ActorContext, companyDao: CompanyDao) extends Bas
             } ~ delete {
               ctx => companyDeleteHandler ! DeleteMessage(ctx, entityId)
             } ~ patch {
-              ctx => companyPutHandler ! PatchMessage(ctx, entityId)
+              entity(as[List[JsonNotation]]) { patch =>
+                ctx => companyPutHandler ! PatchMessage(ctx, patch, entityId)
+              }
             }
           }
         }

@@ -1,10 +1,12 @@
 package com.vixxx123.scalasprayslickexample.exampleapi.person
 
-import akka.actor.{ActorContext, Props}
+import akka.actor.ActorContext
 import akka.routing.RoundRobinPool
+import com.vixxx123.scalasprayslickexample.entity.JsonNotation
 import com.vixxx123.scalasprayslickexample.logger.Logging
 import com.vixxx123.scalasprayslickexample.rest.{BaseResourceApi, Api}
 import spray.httpx.SprayJsonSupport._
+import spray.json.DefaultJsonProtocol._
 
 
 /**
@@ -53,7 +55,9 @@ class PersonApi(actorContext: ActorContext, personDao: PersonDao) extends BaseRe
             } ~ delete {
               ctx => personDeleteHandler ! DeleteMessage(ctx, entityId)
             } ~ patch {
-              ctx => personPutHandler ! PatchMessage(ctx, entityId)
+              entity(as[List[JsonNotation]]) { patch =>
+                ctx => personPutHandler ! PatchMessage(ctx, patch, entityId)
+              }
             }
           }
         }
