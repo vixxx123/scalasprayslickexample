@@ -7,4 +7,4 @@ package com.vixxx123.scalasprayslickexample.rest.outh2
 
 import java.util.Date
 
-case class Token(accessToken: String, expires: Date)
+case class Token(accessToken: String, expires: Long)

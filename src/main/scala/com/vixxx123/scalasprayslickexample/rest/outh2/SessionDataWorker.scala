@@ -6,11 +6,14 @@
  */
 package com.vixxx123.scalasprayslickexample.rest.outh2
 
-import java.util.Date
+import java.util.concurrent.TimeUnit
 
 import akka.actor.{FSM, Actor}
+import akka.util.Timeout
 
 class SessionDataWorker extends FSM[State, Option[Session]]{
+
+  val TokenTimeout = "TOKEN_TIMEOUT"
 
   implicit def sessionToOption(session: Session): Option[Session] = Some(session)
 
@@ -18,17 +21,24 @@ class SessionDataWorker extends FSM[State, Option[Session]]{
 
   when(Init) {
     case Event(initSession: Session, session) =>
-      goto(Active) using initSession.copy(user = initSession.user.copy(lastLogin = Some(new Date)))
+      setTimer(TokenTimeout, KillSession,
+        Timeout(initSession.token.expires - System.currentTimeMillis(), TimeUnit.MILLISECONDS).duration, repeat = false)
+      sender() ! initSession
+      goto(Active) using initSession
   }
 
   when(Active) {
     case Event(GetSession, session) =>
       sender() ! session
       stay using session
+
+    case Event(KillSession, session) =>
+      cancelTimer(TokenTimeout)
+      stop()
   }
 
 }
 
-private sealed trait State
-private case object Init extends State
-private case object Active extends State
+sealed trait State
+case object Init extends State
+case object Active extends State

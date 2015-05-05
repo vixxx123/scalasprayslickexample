@@ -13,6 +13,7 @@ import com.vixxx123.scalasprayslickexample.rest.{Api, BaseResourceApi}
 import spray.httpx.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
 
+
 /**
  * Company API main class
  *

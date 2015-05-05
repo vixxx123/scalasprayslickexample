@@ -5,15 +5,21 @@
  */
 package com.vixxx123.scalasprayslickexample.logger
 
+import java.text.SimpleDateFormat
+import java.util.{TimeZone, Date}
+
 class ConsoleLogger extends BaseLogger {
 
+  private val dateFormatter: SimpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
+//  dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"))
+
   override def debug(msg: String, tag: String): Unit = {
-    println(s"DEBUG | $tag | $msg")
+    println(s"DEBUG | ${dateFormatter.format(new Date())} | $tag | $msg")
   }
 
   override def error(msg: String, tag: String, cause: Throwable, stack: Array[StackTraceElement]): Unit = {
-    println(s"ERROR | $tag | MSG   | $msg")
-    println(s"ERROR | $tag | CAUSE | $cause")
+    println(s"ERROR | ${dateFormatter.format(new Date())} | $tag | MSG   | $msg")
+    println(s"ERROR | ${dateFormatter.format(new Date())} | $tag | CAUSE | $cause")
     stack.foreach {
       stackElement =>
         println(s"ERROR | $tag | STACK | $stackElement")
@@ -21,6 +27,6 @@ class ConsoleLogger extends BaseLogger {
   }
 
   override def info(msg: String, tag: String): Unit = {
-    println(s"INFO | $tag | $msg")
+    println(s"INFO | ${dateFormatter.format(new Date())} | $tag | $msg")
   }
 }
