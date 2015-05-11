@@ -10,6 +10,7 @@ import akka.actor.{ActorSystem, PoisonPill}
 import akka.io.IO
 import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.logger.{BaseLogger, Logger}
+import com.vixxx123.scalasprayslickexample.rest.outh2.SessionService
 import com.vixxx123.scalasprayslickexample.websocket.WebSocketServer
 import spray.can.Http
 import spray.can.server.UHttp
@@ -27,7 +28,7 @@ class Rest(actorSystem: ActorSystem, listOfApis: List[Api], loggers: List[BaseLo
     // start up logger actor system and logger actor
     Logger.LoggingActorSystem.actorOf(Logger.props(loggers), Logger.LoggerActorName)
 
-
+    SessionService.init
     // start up API service actor
     val service = system.actorOf(ApiService.props(listOfApis), ApiService.ActorName)
     val server = system.actorOf(WebSocketServer.props(), "websocket")

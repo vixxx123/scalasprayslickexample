@@ -29,7 +29,7 @@ class SessionDataWorker extends FSM[State, Option[Session]]{
 
   when(Active) {
     case Event(GetSession, session) =>
-      sender() ! session
+      sender() ! session.get
       stay using session
 
     case Event(KillSession, session) =>

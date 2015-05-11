@@ -8,6 +8,7 @@ package com.vixxx123.scalasprayslickexample.rest.outh2
 
 import akka.actor.Status.Failure
 import akka.actor.{PoisonPill, ActorRef, Props, Actor}
+import com.vixxx123.scalasprayslickexample.util.TokenUtil
 
 import scala.util.Random
 
@@ -20,7 +21,8 @@ class SessionManager extends Actor {
       //token:
       val halfHour = 1000 * 60 * 30
       val random = new Random()
-      val token = Token("temp" + random.nextInt(), System.currentTimeMillis() + SessionManager.LifeTimeInMilli)
+
+      val token = Token(TokenUtil.generateToken, System.currentTimeMillis() + SessionManager.LifeTimeInMilli)
       val sessionWorker = context.actorOf(Props(classOf[SessionDataWorker]), s"session-${token.accessToken}")
       sessionWorker forward Session(token, user)
 
