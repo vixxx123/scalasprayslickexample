@@ -10,17 +10,21 @@ import akka.actor.{ActorSystem, PoisonPill}
 import akka.io.IO
 import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.logger.{BaseLogger, Logger}
-import com.vixxx123.scalasprayslickexample.rest.oauth2.SessionService
-import com.vixxx123.scalasprayslickexample.websocket.WebSocketServer
+import com.vixxx123.scalasprayslickexample.rest.oauth2.{AuthUserDao, OauthConfig, SessionService}
+import com.vixxx123.scalasprayslickexample.websocket.{WebSocketServerWithAuthorization, WebSocketServer}
 import spray.can.Http
 import spray.can.server.UHttp
 
 import scala.concurrent.duration._
 
-class Rest(actorSystem: ActorSystem, listOfApis: List[Api], loggers: List[BaseLogger]) {
+class Rest(actorSystem: ActorSystem, listOfApis: List[Api], loggers: List[BaseLogger],
+           oauthConfig: Option[OauthConfig]  = None) {
   // we need an ActorSystem to host our application in
   implicit val system = actorSystem
 
+  def withOauth(oauthConfig: OauthConfig) = {
+    new Rest(actorSystem, listOfApis, loggers, Some(oauthConfig))
+  }
 
   def start(): Unit = {
 
@@ -28,10 +32,19 @@ class Rest(actorSystem: ActorSystem, listOfApis: List[Api], loggers: List[BaseLo
     // start up logger actor system and logger actor
     Logger.LoggingActorSystem.actorOf(Logger.props(loggers), Logger.LoggerActorName)
 
-    SessionService.init
+
     // start up API service actor
-    val service = system.actorOf(ApiService.props(listOfApis), ApiService.ActorName)
-    val server = system.actorOf(WebSocketServer.props(), "websocket")
+
+    val apis = oauthConfig match {
+      case Some(config) =>
+        SessionService.init(config.authorizationProvider)
+        listOfApis :+ config.oauthApi
+
+      case None => listOfApis
+    }
+
+    val service = system.actorOf(ApiService.props(apis), ApiService.ActorName)
+    val server = system.actorOf(WebSocketServer.props(oauthConfig), WebSocketServer.Name)
 
 
     println("Websocket is starting...")

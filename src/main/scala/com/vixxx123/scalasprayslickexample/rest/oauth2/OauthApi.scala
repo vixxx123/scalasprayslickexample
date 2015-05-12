@@ -16,6 +16,8 @@ import com.vixxx123.scalasprayslickexample.rest.{Api, BaseResourceApi}
 import spray.http.FormData
 import spray.httpx.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
+import spray.routing.AuthenticationFailedRejection
+import spray.routing.AuthenticationFailedRejection.CredentialsRejected
 
 import scala.util.{Failure, Success}
 
@@ -27,7 +29,7 @@ import scala.util.{Failure, Success}
  * trait DatabaseAccess - for db access
  *
  */
-class OauthApi(val actorContext: ActorContext, sessionManager: ActorRef) extends BaseResourceApi with Logging {
+class OauthApi(val actorContext: ActorContext, sessionManager: ActorRef, authUserDao: AuthUserDao) extends BaseResourceApi with Logging {
 
   private implicit val ec = actorContext.dispatcher
   private implicit val timeout = Timeout(1, TimeUnit.SECONDS)
@@ -35,6 +37,7 @@ class OauthApi(val actorContext: ActorContext, sessionManager: ActorRef) extends
   override val logTag: String = getClass.getName
 
   override def init() = {
+    authUserDao.initTable()
     super.init()
   }
 
@@ -46,15 +49,18 @@ class OauthApi(val actorContext: ActorContext, sessionManager: ActorRef) extends
             user =>
               ctx => {
                 val localCtx = ctx
-
                 val username = user.fields.filter(item => item._1 == "username").head._2
                 val password = user.fields.filter(item => item._1 == "password").head._2
-                val login = sessionManager ? Create(AuthUser(None, username = username, password = password))
-                login.mapTo[Session].onComplete{
+
+                val loginProccess = sessionManager ? Create(AuthUser(None, username = username, password = password))
+                loginProccess.mapTo[Session].onComplete {
                   case Success(result) =>
                     localCtx.complete(TokenResponse(result.token.accessToken, SessionManager.LifeTimeInSec))
                   case Failure(e) =>
-                    localCtx.complete(e)
+                    e match {
+                      case IncorrectLogin => localCtx.reject (AuthenticationFailedRejection (CredentialsRejected, List ()))
+                      case t: Exception => localCtx.complete(t)
+                    }
                 }
               }
           }
@@ -65,6 +71,6 @@ class OauthApi(val actorContext: ActorContext, sessionManager: ActorRef) extends
 
 class OauthApiApiBuilder extends Api{
   override def create(actorContext: ActorContext): BaseResourceApi = {
-    new OauthApi(actorContext, SessionService.getSessionManager)
+    new OauthApi(actorContext, SessionService.getSessionManager, new AuthUserDao)
   }
 }

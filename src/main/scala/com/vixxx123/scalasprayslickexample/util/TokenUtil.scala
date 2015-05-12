@@ -19,7 +19,7 @@ object TokenUtil {
     sha1(bytes)
   }
 
-  private def sha1(bytes: Array[Byte]): String = digest(bytes, MessageDigest.getInstance("SHA1"))
+  def sha1(bytes: Array[Byte]): String = digest(bytes, MessageDigest.getInstance("SHA1"))
 
   private def digest(bytes: Array[Byte], md: MessageDigest): String = {
     md.update(bytes)

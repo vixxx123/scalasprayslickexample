@@ -16,6 +16,11 @@ trait PublishWebSocket {
     val websocket = context.actorSelection(s"/user/websocket")
     websocket ! Push(JsonUtil.serialize(pubSubMsg))
   }
+
+  def publishToUser(userId: Int, pubSubMsg: PublishMessage)(implicit context: ActorContext) = {
+    val websocket = context.actorSelection(s"/user/websocket")
+    websocket ! PushToUser(userId, JsonUtil.serialize(pubSubMsg))
+  }
 }
 
 sealed class PublishMessage(val operation: String)

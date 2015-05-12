@@ -11,8 +11,10 @@ import com.vixxx123.scalasprayslickexample.logger.ConsoleLogger
 import com.vixxx123.scalasprayslickexample.exampleapi.company.CompanyApiBuilder
 import com.vixxx123.scalasprayslickexample.exampleapi.person.PersonApiBuilder
 import com.vixxx123.scalasprayslickexample.rest.Rest
-import com.vixxx123.scalasprayslickexample.rest.oauth2.OauthApiApiBuilder
+import com.vixxx123.scalasprayslickexample.rest.oauth2.{OauthConfig, AuthUserDao, MysqlAuthorizationProvider, OauthApiApiBuilder}
 
 object RestExampleApp extends App{
-  new Rest(ActorSystem("on-spray-can"), List(new PersonApiBuilder, new CompanyApiBuilder, new OauthApiApiBuilder), List(new ConsoleLogger)).start()
+  val oauthConfig = new OauthConfig(new OauthApiApiBuilder, new MysqlAuthorizationProvider(new AuthUserDao))
+  new Rest(ActorSystem("on-spray-can"), List(new PersonApiBuilder,
+    new CompanyApiBuilder), List(new ConsoleLogger)).withOauth(oauthConfig).start()
 }

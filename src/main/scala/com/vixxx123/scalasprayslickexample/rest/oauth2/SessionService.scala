@@ -11,8 +11,8 @@ object SessionService {
 
   var sessionManager: Option[ActorRef] = None
 
-  def init(implicit actorSystem: ActorSystem): Unit = {
-    sessionManager = Some(actorSystem.actorOf(SessionManager.props(), SessionManager.Name))
+  def init(authProvider: AuthorizationProvider)(implicit actorSystem: ActorSystem): Unit = {
+    sessionManager = Some(actorSystem.actorOf(SessionManager.props(authProvider), SessionManager.Name))
   }
 
   def getSessionManager: ActorRef = {

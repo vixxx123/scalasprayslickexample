@@ -53,8 +53,7 @@ class CompanyApi(val actorContext: ActorContext, companyDao: CompanyDao) extends
   override def route() =
     pathPrefix(ResourceName) {
       auth {
-        user => {
-
+        implicit userAuth => {
           pathEnd {
             get {
               ctx => companyGetHandler ! GetMessage(ctx, None)

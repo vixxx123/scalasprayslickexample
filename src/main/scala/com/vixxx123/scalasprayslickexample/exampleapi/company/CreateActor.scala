@@ -9,11 +9,13 @@ import akka.actor.{Props, Actor}
 import com.vixxx123.scalasprayslickexample.entity.EntityHelper
 import com.vixxx123.scalasprayslickexample.logger.Logging
 import com.vixxx123.scalasprayslickexample.rest.HttpRequestHelper
+import com.vixxx123.scalasprayslickexample.rest.oauth2.AuthUser
 import com.vixxx123.scalasprayslickexample.websocket.{CreatePublishMessage, PublishWebSocket}
 import spray.httpx.SprayJsonSupport._
 import spray.routing.RequestContext
 
-case class CreateMessage(ctx: RequestContext, person: Company)
+case class CreateMessage(ctx: RequestContext, person: Company)(implicit val loggedUser: AuthUser)
+
 
 /**
  * Actor handling person create message
@@ -24,11 +26,12 @@ class CreateActor(companyDao: CompanyDao) extends Actor with Logging with Publis
 
   override def receive: Receive = {
 
-    case CreateMessage(ctx, company) =>
+    case cm@CreateMessage(ctx, company) =>
       try {
         val added = company.copy(id = Some(companyDao.create(company)))
         ctx.complete(added)
         publishAll(CreatePublishMessage(ResourceName, entityUri(getRequestUri(ctx), added), added))
+        publishToUser(cm.loggedUser.getId, CreatePublishMessage(ResourceName, entityUri(getRequestUri(ctx), added), added))
         L.debug(s"Company create success")
       } catch {
         case e: Exception =>

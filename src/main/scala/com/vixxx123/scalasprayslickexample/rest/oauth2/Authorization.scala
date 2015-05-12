@@ -21,11 +21,12 @@ trait Authorization extends HttpServiceBase {
   implicit val ec: ExecutionContext = actorContext.dispatcher
 
   private def authenticator = TokenAuthenticator[AuthUser](
-    headerName = "access_token",
+    headerName = "Authorization",
     queryStringParameterName = "access_token"
   ) { key =>
+    val authKey = key.split(" ")
     implicit val timeout = Timeout(1, TimeUnit.SECONDS)
-    (SessionService.getSessionManager ? new GetSession(key)).recover{case e: Exception => None}.mapTo[Option[Session]].map {
+    (SessionService.getSessionManager ? new GetSession(authKey(1))).recover{case e: Exception => None}.mapTo[Option[Session]].map {
       case Some(res) => Some(res.user)
       case None => None
     }
