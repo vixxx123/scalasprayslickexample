@@ -8,7 +8,7 @@ package com.vixxx123.scalasprayslickexample.websocket
 
 import akka.actor.{Props, Actor}
 import com.vixxx123.scalasprayslickexample.logger.Logging
-import com.vixxx123.scalasprayslickexample.rest.oauth2.{OauthConfig, Session, GetSession, SessionService}
+import com.vixxx123.scalasprayslickexample.rest.oauth2.OauthConfig
 import spray.can.Http
 
 
