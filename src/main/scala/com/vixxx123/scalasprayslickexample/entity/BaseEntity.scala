@@ -7,5 +7,5 @@ package com.vixxx123.scalasprayslickexample.entity
 
 trait BaseEntity {
   val id: Option[Int]
-  def getId: Int
+  def getId: Int = id.getOrElse(throw new Exception("Getting id of not persisted entity"))
 }

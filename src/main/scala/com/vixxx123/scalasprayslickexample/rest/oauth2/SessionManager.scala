@@ -4,7 +4,7 @@
  * Created on 2015-04-29
  * Project: ${PROJECT_NAME}
  */
-package com.vixxx123.scalasprayslickexample.rest.outh2
+package com.vixxx123.scalasprayslickexample.rest.oauth2
 
 import akka.actor.Status.Failure
 import akka.actor.{PoisonPill, ActorRef, Props, Actor}
@@ -61,4 +61,4 @@ case class DestroySession(token: String)
 case class GetSession(token: String)
 case object KillSession
 case object SessionNotFound extends Exception
-private[outh2] case object GetSession
+private[oauth2] case object GetSession

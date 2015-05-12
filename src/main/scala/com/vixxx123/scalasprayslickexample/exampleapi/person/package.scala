@@ -14,9 +14,7 @@ package object person {
 
   val ResourceName = "person"
 
-  case class Person(id: Option[Int] = None, name: String, lastname: String) extends BaseEntity {
-    def getId = id.getOrElse(throw new Exception("Getting id of not persisted entity"))
-  }
+  case class Person(id: Option[Int] = None, name: String, lastname: String) extends BaseEntity
 
   implicit val PersonFormat = jsonFormat3(Person)
 

@@ -4,7 +4,7 @@
  * Created on 2015-04-29
  * Project: ${PROJECT_NAME}
  */
-package com.vixxx123.scalasprayslickexample.rest.outh2
+package com.vixxx123.scalasprayslickexample.rest.oauth2
 
 trait OauthProvider {
 

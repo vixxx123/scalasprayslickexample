@@ -4,7 +4,7 @@
  * Created on 2015-04-29
  * Project: ScalaRest
  */
-package com.vixxx123.scalasprayslickexample.rest.outh2
+package com.vixxx123.scalasprayslickexample.rest.oauth2
 
 import java.util.concurrent.TimeUnit
 
@@ -29,7 +29,7 @@ class SessionDataWorker extends FSM[State, Option[Session]]{
 
   when(Active) {
     case Event(GetSession, session) =>
-      sender() ! session.get
+      sender() ! session
       stay using session
 
     case Event(KillSession, session) =>

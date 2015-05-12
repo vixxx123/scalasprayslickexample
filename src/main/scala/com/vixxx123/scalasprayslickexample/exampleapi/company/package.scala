@@ -14,9 +14,7 @@ package object company {
 
   val ResourceName = "company"
 
-  case class Company(id: Option[Int] = None, name: String, address: String) extends BaseEntity {
-    def getId = id.getOrElse(throw new Exception("Getting id of not persisted entity"))
-  }
+  case class Company(id: Option[Int] = None, name: String, address: String) extends BaseEntity
 
   implicit val CompanyFormat = jsonFormat3(Company)
 }

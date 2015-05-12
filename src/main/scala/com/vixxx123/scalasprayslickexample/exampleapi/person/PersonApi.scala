@@ -21,7 +21,7 @@ import spray.json.DefaultJsonProtocol._
  * trait BaseResourceApi - for initialization
  *
  */
-class PersonApi(actorContext: ActorContext, personDao: PersonDao) extends BaseResourceApi with Logging {
+class PersonApi(val actorContext: ActorContext, personDao: PersonDao) extends BaseResourceApi with Logging {
 
   val personCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(CreateActor.props(personDao)), CreateActor.Name)
   val personPutHandler = actorContext.actorOf(RoundRobinPool(5).props(UpdateActor.props(personDao)), UpdateActor.Name)

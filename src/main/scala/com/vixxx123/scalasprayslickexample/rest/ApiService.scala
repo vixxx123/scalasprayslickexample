@@ -41,6 +41,8 @@ trait Api {
 
 trait BaseResourceApi extends HttpServiceBase{
 
+  val actorContext: ActorContext
+
   implicit val JsonNotationFormat = jsonFormat3(JsonNotation)
 
   def init(): Unit = {}

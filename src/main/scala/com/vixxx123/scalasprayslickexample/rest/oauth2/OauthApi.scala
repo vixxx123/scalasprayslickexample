@@ -3,7 +3,7 @@
  *
  * Created on 2015-04-24
  */
-package com.vixxx123.scalasprayslickexample.rest.outh2
+package com.vixxx123.scalasprayslickexample.rest.oauth2
 
 import java.util.concurrent.TimeUnit
 
@@ -27,16 +27,10 @@ import scala.util.{Failure, Success}
  * trait DatabaseAccess - for db access
  *
  */
-class OauthApi(actorContext: ActorContext, sessionManager: ActorRef) extends BaseResourceApi with Logging {
-
-  case class TokenResponse(access_token: String, expires_in: Long, token_type: String = "Bearer")
-
-  private val ResourceName = "oauth"
+class OauthApi(val actorContext: ActorContext, sessionManager: ActorRef) extends BaseResourceApi with Logging {
 
   private implicit val ec = actorContext.dispatcher
   private implicit val timeout = Timeout(1, TimeUnit.SECONDS)
-  private implicit val jsonFormat = jsonFormat3(TokenResponse)
-
 
   override val logTag: String = getClass.getName
 
@@ -55,7 +49,7 @@ class OauthApi(actorContext: ActorContext, sessionManager: ActorRef) extends Bas
 
                 val username = user.fields.filter(item => item._1 == "username").head._2
                 val password = user.fields.filter(item => item._1 == "password").head._2
-                val login = sessionManager ? Create(AuthUser(None, username = username, password = password, None))
+                val login = sessionManager ? Create(AuthUser(None, username = username, password = password))
                 login.mapTo[Session].onComplete{
                   case Success(result) =>
                     localCtx.complete(TokenResponse(result.token.accessToken, SessionManager.LifeTimeInSec))

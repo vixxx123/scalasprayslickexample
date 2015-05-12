@@ -1,4 +1,4 @@
-package com.vixxx123.scalasprayslickexample.rest.outh2
+package com.vixxx123.scalasprayslickexample.rest.oauth2
 
 import akka.actor.{ActorRef, ActorSystem}
 
