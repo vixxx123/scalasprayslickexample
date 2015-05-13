@@ -41,9 +41,11 @@ class WebSocketWorker(val serverConnection: ActorRef, oauthConfig: Option[OauthC
       sender() ! HttpResponse(StatusCodes.Unauthorized)
   }
 
-  def authorized(token: String): Boolean = {
+  private def authorized(token: String): Boolean = {
     val authKey = token.split(" ")
     implicit val timeout = Timeout(1, TimeUnit.SECONDS)
+    implicit val ec = context.dispatcher
+
     user = Await.result((SessionService.getSessionManager ? new GetSession(authKey(1))).recover{case e: Exception => None}.mapTo[Option[Session]].map {
       case Some(res) => Some(res.user)
       case None => None
@@ -67,6 +69,7 @@ class WebSocketWorker(val serverConnection: ActorRef, oauthConfig: Option[OauthC
           if (userId == usr.getId)
             send(TextFrame(msg))
         case None =>
+
       }
 
     case x: FrameCommandFailed =>

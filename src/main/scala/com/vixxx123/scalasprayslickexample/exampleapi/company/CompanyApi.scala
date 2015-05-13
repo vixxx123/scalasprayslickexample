@@ -5,22 +5,14 @@
  */
 package com.vixxx123.scalasprayslickexample.exampleapi.company
 
-import java.util.concurrent.TimeUnit
-
-import akka.pattern.ask
 import akka.actor.ActorContext
 import akka.routing.RoundRobinPool
-import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.entity.JsonNotation
 import com.vixxx123.scalasprayslickexample.logger.Logging
 import com.vixxx123.scalasprayslickexample.rest.oauth2._
 import com.vixxx123.scalasprayslickexample.rest.{Api, BaseResourceApi}
 import spray.httpx.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
-import spray.routing.Directive1
-
-import scala.concurrent.Promise
-import scala.util.{Failure, Success}
 
 
 /**

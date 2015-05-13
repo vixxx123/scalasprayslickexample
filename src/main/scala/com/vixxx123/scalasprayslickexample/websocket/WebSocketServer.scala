@@ -31,7 +31,9 @@ class WebSocketServer(oauthConfig: Option[OauthConfig]) extends Actor with Loggi
       }
 
     case push: PushToUser =>
-      println(push)
+      context.children.foreach {
+        _ ! push
+      }
 
   }
 
