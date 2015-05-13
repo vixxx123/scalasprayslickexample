@@ -13,11 +13,11 @@ import akka.routing.RoundRobinPool
 import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.logger.Logging
 import com.vixxx123.scalasprayslickexample.rest.{Api, BaseResourceApi}
-import spray.http.FormData
+import spray.http.{StatusCodes, FormData}
 import spray.httpx.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
 import spray.routing.AuthenticationFailedRejection
-import spray.routing.AuthenticationFailedRejection.CredentialsRejected
+import spray.routing.AuthenticationFailedRejection.{CredentialsMissing, CredentialsRejected}
 
 import scala.util.{Failure, Success}
 
@@ -49,18 +49,31 @@ class OauthApi(val actorContext: ActorContext, sessionManager: ActorRef, authUse
             user =>
               ctx => {
                 val localCtx = ctx
-                val username = user.fields.filter(item => item._1 == "username").head._2
-                val password = user.fields.filter(item => item._1 == "password").head._2
+                val grantType = user.fields.find(item => item._1 == "grant_type")
+                grantType match{ // if (grantType.equals()){
+                  case Some(grant) if grant._2.equals("client_credentials") =>
+                    val username = user.fields.find(item => item._1 == "username")
+                    val password = user.fields.find(item => item._1 == "password")
 
-                val loginProccess = sessionManager ? Create(AuthUser(None, username = username, password = password))
-                loginProccess.mapTo[Session].onComplete {
-                  case Success(result) =>
-                    localCtx.complete(TokenResponse(result.token.accessToken, SessionManager.LifeTimeInSec))
-                  case Failure(e) =>
-                    e match {
-                      case IncorrectLogin => localCtx.reject (AuthenticationFailedRejection (CredentialsRejected, List ()))
-                      case t: Exception => localCtx.complete(t)
+                    (username, password) match {
+                      case (Some(login), Some(pass)) =>
+                        val loginProccess = sessionManager ? Create(AuthUser(None, username = login._2, password = pass._2))
+                        loginProccess.mapTo[Session].onComplete {
+                          case Success(result) =>
+                            localCtx.complete(TokenResponse(result.token.accessToken, SessionManager.LifeTimeInSec))
+                          case Failure(e) =>
+                            e match {
+                              case IncorrectLogin => localCtx.reject (AuthenticationFailedRejection (CredentialsRejected, List ()))
+                              case t: Exception => localCtx.complete(t)
+                            }
+                        }
+                      case _: Any =>
+                        localCtx.reject (AuthenticationFailedRejection (CredentialsMissing, List ()))
                     }
+
+
+                  case any: Any =>
+                    localCtx.complete(StatusCodes.BadRequest, "grant_type is missing or unknown type")
                 }
               }
           }

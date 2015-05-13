@@ -15,6 +15,7 @@ class MysqlAuthorizationProvider(authUserDao: AuthUserDao) extends Authorization
 
   override def login(userToLogin: AuthUser): Option[AuthUser] = {
     val password = TokenUtil.sha1(userToLogin.password.toCharArray.map{_.toByte})
+
     connectionPool withSession {
       implicit session =>
         TableQuery[AuthUserT].filter(item => item.username === userToLogin.username &&
