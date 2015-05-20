@@ -15,7 +15,7 @@ import scala.slick.driver.MySQLDriver.simple._
  * Database connection pool trait / mix it wherever db access is needed
  */
 trait DatabaseAccess {
-  val connectionPool: MySQLDriver.backend.DatabaseDef = DatabaseAccess.DatabasePool
+  lazy val connectionPool: MySQLDriver.backend.DatabaseDef = DatabaseAccess.DatabasePool
 }
 
 private object DatabaseAccess {

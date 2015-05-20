@@ -9,7 +9,7 @@ import akka.actor.{ActorRef, ActorSystem}
  */
 object SessionService {
 
-  var sessionManager: Option[ActorRef] = None
+  private var sessionManager: Option[ActorRef] = None
 
   def init(authProvider: AuthorizationProvider)(implicit actorSystem: ActorSystem): Unit = {
     sessionManager = Some(actorSystem.actorOf(SessionManager.props(authProvider), SessionManager.Name))

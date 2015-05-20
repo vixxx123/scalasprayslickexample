@@ -5,8 +5,35 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.vixxx123</groupId>
-    <artifactId>com.vixxx123</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <artifactId>scalasprayslickexample_2.11</artifactId>
+    <packaging>jar</packaging>
+    <version>0.1.0</version>
+    <name>scalasprayslickexample</name>
+    <organization>
+        <name>com.vixxx123</name>
+    </organization>
+    <url>http://github.com/vixxx123/scalasprayslickexample</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>git@github.com:vixxx123/scalasprayslickexample.git</url>
+        <connection>scm:git:git@github.com:vixxx123/scalasprayslickexample.gitt</connection>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>vixxx123</id>
+            <name>Wiktor Tychulski</name>
+            <email>wiktor.tychulski@gmail.com</email>
+        </developer>
+    </developers>
+
 
     <properties>
         <scala.maven.plugin.version>3.2.0</scala.maven.plugin.version>
@@ -43,6 +70,12 @@
             <id>repo.spray.io</id>
             <name>spray-repo</name>
             <url>http://repo.spray.io</url>
+        </repository>
+
+        <repository>
+            <id>hairyfotr.github.io</id>
+            <name>releases</name>
+            <url>https://hairyfotr.github.io/linteRepo/releases</url>
         </repository>
     </repositories>
 
@@ -160,7 +193,11 @@
             <scope>test</scope>
         </dependency>
 
-
+        <dependency>
+            <groupId>com.foursquare.lint</groupId>
+            <artifactId>linter_${scala.version.major}</artifactId>
+            <version>0.1.9</version>
+        </dependency>
     </dependencies>
 
     <build>

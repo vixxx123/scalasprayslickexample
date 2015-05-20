@@ -10,12 +10,15 @@ import java.util.concurrent.TimeUnit
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
+import com.vixxx123.scalasprayslickexample.database.DatabaseAccess
 import com.vixxx123.scalasprayslickexample.exampleapi.company._
 import com.vixxx123.scalasprayslickexample.logger.ConsoleLogger
 import com.vixxx123.scalasprayslickexample.rest.Rest
+import com.vixxx123.scalasprayslickexample.rest.oauth2.{AuthUserDao, OauthConfig}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
+import spray.http.HttpHeaders.RawHeader
 
 import spray.http._
 import scala.concurrent.{Await, Future}
@@ -24,11 +27,11 @@ import spray.httpx.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
 
 @RunWith(classOf[JUnitRunner])
-class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
+class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll with DatabaseAccess {
 
   implicit val system = ActorSystem("test")
   implicit val ec = system.dispatcher
-  val rest = new Rest(system, List(companyApi), List(new ConsoleLogger))
+  val rest = new Rest(system, List(companyApi), List(new ConsoleLogger), Some(OauthConfig(oauthApi, oauthProvider)))
 
   implicit val timeout = Timeout(2000, TimeUnit.SECONDS)
 
@@ -38,6 +41,7 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
         // we want to get json
         ((_: HttpRequest).mapEntity(_.flatMap(f => HttpEntity(
           f.contentType.withMediaType(MediaTypes.`application/json`), f.data))))
+          ~> addHeader(RawHeader("Authorization", "123123123123123"))
           ~> sendReceive
           ~> unmarshal[Company]
         )
@@ -58,6 +62,7 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
       // we want to get json
       ((_:HttpRequest).mapEntity( _.flatMap( f => HttpEntity(
         f.contentType.withMediaType(MediaTypes.`application/json`),f.data))))
+        ~> addHeader(RawHeader("Authorization", "123123123123123"))
         ~> sendReceive
         ~> unmarshal[Company]
       )
@@ -74,6 +79,7 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
       // we want to get json
       ((_:HttpRequest).mapEntity( _.flatMap( f => HttpEntity(
         f.contentType.withMediaType(MediaTypes.`application/json`),f.data))))
+        ~> addHeader(RawHeader("Authorization", "123123123123123"))
         ~> sendReceive
       )
 
@@ -89,6 +95,7 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
       // we want to get json
       ((_:HttpRequest).mapEntity( _.flatMap( f => HttpEntity(
         f.contentType.withMediaType(MediaTypes.`application/json`),f.data))))
+        ~> addHeader(RawHeader("Authorization", "123123123123123"))
         ~> sendReceive
         ~> unmarshal[List[Company]]
       )
@@ -105,6 +112,7 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
       // we want to get json
       ((_:HttpRequest).mapEntity( _.flatMap( f => HttpEntity(
         f.contentType.withMediaType(MediaTypes.`application/json`),f.data))))
+        ~> addHeader(RawHeader("Authorization", "123123123123123"))
         ~> sendReceive
       )
 
@@ -120,6 +128,7 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
       // we want to get json
       ((_:HttpRequest).mapEntity( _.flatMap( f => HttpEntity(
         f.contentType.withMediaType(MediaTypes.`application/json`),f.data))))
+        ~> addHeader(RawHeader("Authorization", "123123123123123"))
         ~> sendReceive
       )
 
@@ -136,6 +145,7 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
       // we want to get json
       ((_:HttpRequest).mapEntity( _.flatMap( f => HttpEntity(
         f.contentType.withMediaType(MediaTypes.`application/json`),f.data))))
+        ~> addHeader(RawHeader("Authorization", "123123123123123"))
         ~> sendReceive
       )
 
@@ -152,6 +162,7 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
       // we want to get json
       ((_:HttpRequest).mapEntity( _.flatMap( f => HttpEntity(
         f.contentType.withMediaType(MediaTypes.`application/json`),f.data))))
+        ~> addHeader(RawHeader("Authorization", "123123123123123"))
         ~> sendReceive
       )
 
@@ -168,6 +179,7 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll {
       // we want to get json
       ((_:HttpRequest).mapEntity( _.flatMap( f => HttpEntity(
         f.contentType.withMediaType(MediaTypes.`application/json`),f.data))))
+        ~> addHeader(RawHeader("Authorization", "123123123123123"))
         ~> sendReceive
       )
 

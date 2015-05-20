@@ -82,7 +82,7 @@ class OauthApi(val actorContext: ActorContext, sessionManager: ActorRef, authUse
     }
 }
 
-class OauthApiApiBuilder extends Api{
+class OauthApiBuilder extends Api{
   override def create(actorContext: ActorContext): BaseResourceApi = {
     new OauthApi(actorContext, SessionService.getSessionManager, new AuthUserDao)
   }
