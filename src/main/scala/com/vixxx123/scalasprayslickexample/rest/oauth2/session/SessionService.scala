@@ -1,6 +1,7 @@
-package com.vixxx123.scalasprayslickexample.rest.oauth2
+package com.vixxx123.scalasprayslickexample.rest.oauth2.session
 
 import akka.actor.{ActorRef, ActorSystem}
+import com.vixxx123.scalasprayslickexample.rest.oauth2.provider.AuthorizationProvider
 
 /**
  * Created by wiktort on 11/05/2015.

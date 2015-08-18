@@ -4,13 +4,13 @@
  * Created on 2015-04-29
  * Project: ${PROJECT_NAME}
  */
-package com.vixxx123.scalasprayslickexample.rest.oauth2
+package com.vixxx123.scalasprayslickexample.rest.oauth2.session
 
 import akka.actor.Status.Failure
-import akka.actor.{PoisonPill, ActorRef, Props, Actor}
+import akka.actor.{Actor, ActorRef, Props}
+import com.vixxx123.scalasprayslickexample.rest.oauth2.Token
+import com.vixxx123.scalasprayslickexample.rest.oauth2.provider.AuthorizationProvider
 import com.vixxx123.scalasprayslickexample.util.TokenUtil
-
-import scala.util.Random
 
 
 class SessionManager(authProvider: AuthorizationProvider) extends Actor {

@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit
 import akka.pattern.ask
 import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.rest.auth.{AuthenticatedUser, RestApiUser, Authorization}
+import com.vixxx123.scalasprayslickexample.rest.oauth2.session.{SessionService, GetSession, Session}
 import spray.http.HttpRequest
 import spray.routing.RequestContext
 import spray.routing.authentication.Authentication
@@ -34,13 +35,18 @@ class OauthAuthorization extends Authorization {
   }
 }
 
-object OuthRequestParser {
+object OauthRequestParser {
 
   val AuthorizationHeader = "Authorization"
 
   def tokenExists(request: HttpRequest) = request.headers.exists(_.name == AuthorizationHeader)
 
   def getToken(request: HttpRequest) = {
-    val tokenHeader = request.headers.find(_.name == AuthorizationHeader).get
+    val tokenHeader = request.headers.find(_.name == AuthorizationHeader).get.value
+    val authData = tokenHeader.split(" ")
+    if (authData.size != 2) {
+
+    }
   }
 }
+

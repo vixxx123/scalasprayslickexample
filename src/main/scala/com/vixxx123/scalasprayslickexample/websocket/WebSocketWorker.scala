@@ -14,6 +14,7 @@ import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.logger.Logging
 import com.vixxx123.scalasprayslickexample.rest.auth.Authorization
 import com.vixxx123.scalasprayslickexample.rest.oauth2._
+import com.vixxx123.scalasprayslickexample.rest.oauth2.session.{SessionService, GetSession, Session}
 import spray.can.websocket
 import spray.can.websocket.FrameCommandFailed
 import spray.can.websocket.frame.TextFrame

@@ -1,4 +1,6 @@
-package com.vixxx123.scalasprayslickexample.rest.oauth2
+package com.vixxx123.scalasprayslickexample.rest.oauth2.provider
+
+import com.vixxx123.scalasprayslickexample.rest.oauth2.OauthUser
 
 /**
  * Created by wiktort on 12/05/2015.

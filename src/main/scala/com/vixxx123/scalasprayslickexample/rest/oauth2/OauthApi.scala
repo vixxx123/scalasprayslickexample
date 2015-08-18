@@ -12,6 +12,7 @@ import akka.actor.{ActorRef, ActorContext}
 import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.logger.Logging
 import com.vixxx123.scalasprayslickexample.rest.auth.Authorization
+import com.vixxx123.scalasprayslickexample.rest.oauth2.session._
 import com.vixxx123.scalasprayslickexample.rest.{Api, BaseResourceApi}
 import spray.http.{StatusCodes, FormData}
 import spray.httpx.SprayJsonSupport._

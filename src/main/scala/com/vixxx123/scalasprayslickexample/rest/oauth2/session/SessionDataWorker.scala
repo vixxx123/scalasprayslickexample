@@ -4,11 +4,11 @@
  * Created on 2015-04-29
  * Project: ScalaRest
  */
-package com.vixxx123.scalasprayslickexample.rest.oauth2
+package com.vixxx123.scalasprayslickexample.rest.oauth2.session
 
 import java.util.concurrent.TimeUnit
 
-import akka.actor.{FSM, Actor}
+import akka.actor.FSM
 import akka.util.Timeout
 
 class SessionDataWorker extends FSM[State, Option[Session]]{
