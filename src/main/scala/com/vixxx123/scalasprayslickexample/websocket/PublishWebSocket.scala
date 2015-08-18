@@ -8,6 +8,7 @@
 package com.vixxx123.scalasprayslickexample.websocket
 
 import akka.actor.ActorContext
+import com.vixxx123.scalasprayslickexample.rest.auth.RestApiUser
 import com.vixxx123.scalasprayslickexample.util.JsonUtil
 
 trait PublishWebSocket {
@@ -17,9 +18,9 @@ trait PublishWebSocket {
     websocket ! Push(JsonUtil.serialize(pubSubMsg))
   }
 
-  def publishToUser(userId: Int, pubSubMsg: PublishMessage)(implicit context: ActorContext) = {
+  def publishToUser(user: RestApiUser, pubSubMsg: PublishMessage)(implicit context: ActorContext) = {
     val websocket = context.actorSelection(s"/user/websocket")
-    websocket ! PushToUser(userId, JsonUtil.serialize(pubSubMsg))
+    websocket ! PushToUser(user, JsonUtil.serialize(pubSubMsg))
   }
 }
 

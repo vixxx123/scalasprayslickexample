@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit
 
 import akka.pattern.ask
 import akka.actor.{ActorRef, ActorContext}
-import akka.routing.RoundRobinPool
 import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.logger.Logging
+import com.vixxx123.scalasprayslickexample.rest.auth.Authorization
 import com.vixxx123.scalasprayslickexample.rest.{Api, BaseResourceApi}
 import spray.http.{StatusCodes, FormData}
 import spray.httpx.SprayJsonSupport._
@@ -29,9 +29,9 @@ import scala.util.{Failure, Success}
  * trait DatabaseAccess - for db access
  *
  */
-class OauthApi(val actorContext: ActorContext, sessionManager: ActorRef, authUserDao: AuthUserDao) extends BaseResourceApi with Logging {
+class OauthApi(val actorContext: ActorContext, sessionManager: ActorRef, authUserDao: OauthUserDao, override val authorization: Authorization)
+  extends BaseResourceApi with Logging {
 
-  private implicit val ec = actorContext.dispatcher
   private implicit val timeout = Timeout(1, TimeUnit.SECONDS)
 
   override val logTag: String = getClass.getName
@@ -57,7 +57,7 @@ class OauthApi(val actorContext: ActorContext, sessionManager: ActorRef, authUse
 
                     (username, password) match {
                       case (Some(login), Some(pass)) =>
-                        val loginProccess = sessionManager ? Create(AuthUser(None, username = login._2, password = pass._2))
+                        val loginProccess = sessionManager ? Create(OauthUser(None, username = login._2, password = pass._2))
                         loginProccess.mapTo[Session].onComplete {
                           case Success(result) =>
                             localCtx.complete(TokenResponse(result.token.accessToken, SessionManager.LifeTimeInSec))
@@ -83,7 +83,7 @@ class OauthApi(val actorContext: ActorContext, sessionManager: ActorRef, authUse
 }
 
 class OauthApiBuilder extends Api{
-  override def create(actorContext: ActorContext): BaseResourceApi = {
-    new OauthApi(actorContext, SessionService.getSessionManager, new AuthUserDao)
+  override def create(actorContext: ActorContext, authorization: Authorization): BaseResourceApi = {
+    new OauthApi(actorContext, SessionService.getSessionManager, new OauthUserDao, authorization)
   }
 }

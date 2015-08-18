@@ -12,6 +12,7 @@ import akka.pattern.ask
 import akka.actor.{ActorRefFactory, Props, ActorRef}
 import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.logger.Logging
+import com.vixxx123.scalasprayslickexample.rest.auth.Authorization
 import com.vixxx123.scalasprayslickexample.rest.oauth2._
 import spray.can.websocket
 import spray.can.websocket.FrameCommandFailed
@@ -23,16 +24,19 @@ import scala.concurrent.Await
 
 
 object WebSocketWorker {
-  def props(serverConnection: ActorRef, oauthConfig: Option[OauthConfig]) = Props(classOf[WebSocketWorker], serverConnection, oauthConfig)
+  def props(serverConnection: ActorRef, authorization: Authorization) = Props(classOf[WebSocketWorker], serverConnection, authorization)
 }
 
-class WebSocketWorker(val serverConnection: ActorRef, oauthConfig: Option[OauthConfig]) extends HttpServiceActor with Logging with websocket.WebSocketServerWorker {
+class WebSocketWorker(val serverConnection: ActorRef, authorization: Authorization)
+  extends HttpServiceActor with Logging with websocket.WebSocketServerWorker {
 
-  var user: Option[AuthUser] = None
+  var user: Option[OauthUser] = None
 
   override def receive = auth orElse handshaking orElse businessLogicNoUpgrade orElse closeLogic
 
   def auth: Receive = {
+
+
     case req: HttpRequest if oauthConfig.isDefined && !req.headers.exists(header => header.name.equals("Authorization")) =>
       L.debug("Unauthorized: header are missing")
       sender() ! HttpResponse(StatusCodes.Unauthorized)
@@ -63,10 +67,10 @@ class WebSocketWorker(val serverConnection: ActorRef, oauthConfig: Option[OauthC
     // push message to client
     case Push(msg) => send(TextFrame(msg))
 
-    case PushToUser(userId, msg) =>
+    case PushToUser(authUser, msg) =>
       user match {
         case Some(usr) =>
-          if (userId == usr.getId)
+          if (authUser == usr.getId)
             send(TextFrame(msg))
         case None =>
 

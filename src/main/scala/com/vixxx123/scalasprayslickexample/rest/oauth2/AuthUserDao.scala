@@ -7,14 +7,15 @@ package com.vixxx123.scalasprayslickexample.rest.oauth2
 
 import com.vixxx123.scalasprayslickexample.database.{BaseDbEntity, BaseT}
 
+
 import scala.slick.driver.MySQLDriver.simple._
 
-class AuthUserDao extends BaseDbEntity[AuthUser, AuthUserT](ResourceName, TableQuery[AuthUserT])
+class OauthUserDao extends BaseDbEntity[OauthUser, OauthUserT](ResourceName, TableQuery[OauthUserT])
 
-class AuthUserT(tag: Tag) extends BaseT[AuthUser](tag, ResourceName) {
+class OauthUserT(tag: Tag) extends BaseT[OauthUser](tag, ResourceName) {
   def username: Column[String] = column[String]("username")
   def password: Column[String] = column[String]("password")
 
   override def * = (id.?, username, password) <> (
-    (AuthUser.apply _).tupled, AuthUser.unapply)
+    (OauthUser.apply _).tupled, OauthUser.unapply)
 }

@@ -46,6 +46,8 @@ object TokenAuthenticator {
       context.request.uri.query.get(parameterName)
     }
 
+
+
   }
 
   class TokenAuthenticator[T](extractor: TokenExtraction.TokenExtractor, authenticator: (String => Future[Option[T]]))

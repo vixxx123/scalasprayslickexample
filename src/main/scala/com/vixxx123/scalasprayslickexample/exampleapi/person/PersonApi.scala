@@ -9,6 +9,7 @@ import akka.actor.ActorContext
 import akka.routing.RoundRobinPool
 import com.vixxx123.scalasprayslickexample.entity.JsonNotation
 import com.vixxx123.scalasprayslickexample.logger.Logging
+import com.vixxx123.scalasprayslickexample.rest.auth.Authorization
 import com.vixxx123.scalasprayslickexample.rest.{BaseResourceApi, Api}
 import spray.httpx.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
@@ -21,7 +22,7 @@ import spray.json.DefaultJsonProtocol._
  * trait BaseResourceApi - for initialization
  *
  */
-class PersonApi(val actorContext: ActorContext, personDao: PersonDao) extends BaseResourceApi with Logging {
+class PersonApi(val actorContext: ActorContext, personDao: PersonDao, override val authorization: Authorization) extends BaseResourceApi with Logging {
 
   val personCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(CreateActor.props(personDao)), CreateActor.Name)
   val personPutHandler = actorContext.actorOf(RoundRobinPool(5).props(UpdateActor.props(personDao)), UpdateActor.Name)
@@ -71,7 +72,7 @@ class PersonApi(val actorContext: ActorContext, personDao: PersonDao) extends Ba
 }
 
 class PersonApiBuilder extends Api{
-  override def create(actorContext: ActorContext): BaseResourceApi = {
-    new PersonApi(actorContext, new PersonDao)
+  override def create(actorContext: ActorContext, authorization: Authorization): BaseResourceApi = {
+    new PersonApi(actorContext, new PersonDao, authorization)
   }
 }

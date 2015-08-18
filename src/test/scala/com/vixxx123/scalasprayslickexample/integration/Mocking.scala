@@ -8,6 +8,7 @@ package com.vixxx123.scalasprayslickexample.integration
 
 import akka.actor.ActorContext
 import com.vixxx123.scalasprayslickexample.exampleapi.company.{Company, CompanyApiBuilder, CompanyApi, CompanyDao}
+import com.vixxx123.scalasprayslickexample.rest.auth.{NoAuthorisation, Authorization}
 import com.vixxx123.scalasprayslickexample.rest.oauth2._
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -20,14 +21,14 @@ trait Mocking extends MockitoSugar {
   val companyDb = mock[CompanyDao]
   val companyApi = mock[CompanyApiBuilder]
   val oauthApi = mock[OauthApiBuilder]
-  val oauthDao = mock[AuthUserDao]
+  val oauthDao = mock[OauthUserDao]
   val oauthProvider = mock[MysqlAuthorizationProvider]
 
 
-  when(companyApi.create(any(classOf[ActorContext]))).thenAnswer(new Answer[CompanyApi] {
+  when(companyApi.create(any(classOf[ActorContext]), any(classOf[Authorization]))).thenAnswer(new Answer[CompanyApi] {
     override def answer(invocationOnMock: InvocationOnMock): CompanyApi = {
       val args = invocationOnMock.getArguments
-      new CompanyApi(args(0).asInstanceOf[ActorContext], companyDb)
+      new CompanyApi(args(0).asInstanceOf[ActorContext], companyDb, NoAuthorisation)
     }
   })
 
@@ -86,5 +87,5 @@ trait Mocking extends MockitoSugar {
     }
   })
 
-  when(oauthProvider.login(any())).thenReturn(Some(new AuthUser(Some(1), "me", "passhash")))
+  when(oauthProvider.login(any())).thenReturn(Some(new OauthUser(Some(1), "me", "passhash")))
 }

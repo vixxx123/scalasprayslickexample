@@ -9,7 +9,7 @@ import akka.actor.ActorContext
 import akka.routing.RoundRobinPool
 import com.vixxx123.scalasprayslickexample.entity.JsonNotation
 import com.vixxx123.scalasprayslickexample.logger.Logging
-import com.vixxx123.scalasprayslickexample.rest.oauth2._
+import com.vixxx123.scalasprayslickexample.rest.auth.Authorization
 import com.vixxx123.scalasprayslickexample.rest.{Api, BaseResourceApi}
 import spray.httpx.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
@@ -23,7 +23,8 @@ import spray.json.DefaultJsonProtocol._
  * trait DatabaseAccess - for db access
  *
  */
-class CompanyApi(val actorContext: ActorContext, companyDao: CompanyDao) extends Authorization with BaseResourceApi with Logging {
+class CompanyApi(val actorContext: ActorContext, companyDao: CompanyDao, override val authorization: Authorization)
+  extends BaseResourceApi with Logging {
 
 
   /**
@@ -52,8 +53,8 @@ class CompanyApi(val actorContext: ActorContext, companyDao: CompanyDao) extends
             } ~
               post {
                 entity(as[Company]) {
-                  user =>
-                    ctx => companyCreateHandler ! CreateMessage(ctx, user)
+                  company =>
+                    ctx => companyCreateHandler ! CreateMessage(ctx, company)
                 }
               }
           } ~
@@ -79,10 +80,11 @@ class CompanyApi(val actorContext: ActorContext, companyDao: CompanyDao) extends
         }
       }
     }
+
 }
 
 class CompanyApiBuilder extends Api{
-  override def create(actorContext: ActorContext): BaseResourceApi = {
-    new CompanyApi(actorContext, new CompanyDao)
+  override def create(actorContext: ActorContext, authorization: Authorization): BaseResourceApi = {
+    new CompanyApi(actorContext, new CompanyDao, authorization)
   }
 }

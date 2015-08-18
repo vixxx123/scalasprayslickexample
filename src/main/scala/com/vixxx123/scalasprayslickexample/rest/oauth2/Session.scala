@@ -5,5 +5,6 @@
  */
 package com.vixxx123.scalasprayslickexample.rest.oauth2
 
-case class Session(token: Token, user: AuthUser)
+
+case class Session(token: Token, user: OauthUser)
 

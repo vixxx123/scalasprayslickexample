@@ -60,7 +60,7 @@ object SessionManager {
   def props(authProvider: AuthorizationProvider) = Props(classOf[SessionManager], authProvider)
 }
 
-case class Create(user: AuthUser)
+case class Create(user: OauthUser)
 case class DestroySession(token: String)
 case class GetSession(token: String)
 case object KillSession

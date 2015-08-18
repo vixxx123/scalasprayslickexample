@@ -11,14 +11,14 @@ import com.vixxx123.scalasprayslickexample.util.TokenUtil
 
 import scala.slick.lifted.TableQuery
 
-class MysqlAuthorizationProvider(authUserDao: AuthUserDao) extends AuthorizationProvider with DatabaseAccess{
+class MysqlAuthorizationProvider(authUserDao: OauthUserDao) extends AuthorizationProvider with DatabaseAccess{
 
-  override def login(userToLogin: AuthUser): Option[AuthUser] = {
+  override def login(userToLogin: OauthUser): Option[OauthUser] = {
     val password = TokenUtil.sha1(userToLogin.password.toCharArray.map{_.toByte})
 
     connectionPool withSession {
       implicit session =>
-        TableQuery[AuthUserT].filter(item => item.username === userToLogin.username &&
+        TableQuery[OauthUserT].filter(item => item.username === userToLogin.username &&
           item.password === password).firstOption
     }
   }

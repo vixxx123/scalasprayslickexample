@@ -8,6 +8,7 @@ package com.vixxx123.scalasprayslickexample.websocket
 
 import akka.actor.{Props, Actor}
 import com.vixxx123.scalasprayslickexample.logger.Logging
+import com.vixxx123.scalasprayslickexample.rest.auth.RestApiUser
 import com.vixxx123.scalasprayslickexample.rest.oauth2.OauthConfig
 import spray.can.Http
 
@@ -48,4 +49,4 @@ object WebSocketServer {
 
 final case class Push(msg: String)
 
-final case class PushToUser(usrId: Int, msg: String)
+final case class PushToUser(user: RestApiUser, msg: String)
