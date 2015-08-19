@@ -14,7 +14,8 @@ import com.vixxx123.scalasprayslickexample.database.DatabaseAccess
 import com.vixxx123.scalasprayslickexample.exampleapi.company._
 import com.vixxx123.scalasprayslickexample.logger.ConsoleLogger
 import com.vixxx123.scalasprayslickexample.rest.Rest
-import com.vixxx123.scalasprayslickexample.rest.oauth2.{AuthUserDao, OauthConfig}
+import com.vixxx123.scalasprayslickexample.rest.auth.NoAuthorisation
+import com.vixxx123.scalasprayslickexample.rest.oauth2.OauthConfig
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}
@@ -31,7 +32,7 @@ class RestSpec extends FlatSpec with Mocking with BeforeAndAfterAll with Databas
 
   implicit val system = ActorSystem("test")
   implicit val ec = system.dispatcher
-  val rest = new Rest(system, List(companyApi), List(new ConsoleLogger), Some(OauthConfig(oauthApi, oauthProvider)))
+  val rest = new Rest(system, List(companyApi), List(new ConsoleLogger), NoAuthorisation)
 
   implicit val timeout = Timeout(2000, TimeUnit.SECONDS)
 

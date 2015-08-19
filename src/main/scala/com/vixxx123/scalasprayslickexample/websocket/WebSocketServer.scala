@@ -8,12 +8,12 @@ package com.vixxx123.scalasprayslickexample.websocket
 
 import akka.actor.{Props, Actor}
 import com.vixxx123.scalasprayslickexample.logger.Logging
-import com.vixxx123.scalasprayslickexample.rest.auth.RestApiUser
+import com.vixxx123.scalasprayslickexample.rest.auth.{Authorization, RestApiUser}
 import com.vixxx123.scalasprayslickexample.rest.oauth2.OauthConfig
 import spray.can.Http
 
 
-class WebSocketServer(oauthConfig: Option[OauthConfig]) extends Actor with Logging {
+class WebSocketServer(authorization: Authorization) extends Actor with Logging {
 
   def receive = {
 
@@ -22,7 +22,7 @@ class WebSocketServer(oauthConfig: Option[OauthConfig]) extends Actor with Loggi
 
       val serverConnection = sender()
       // should be match with a session/user - this way it will be possible to push message only to specific user
-      val conn = context.actorOf(WebSocketWorker.props(serverConnection, oauthConfig))
+      val conn = context.actorOf(WebSocketWorker.props(serverConnection, authorization))
       serverConnection ! Http.Register(conn)
 
     case push: Push =>
@@ -44,7 +44,7 @@ class WebSocketServer(oauthConfig: Option[OauthConfig]) extends Actor with Loggi
 object WebSocketServer {
   val Name = "websocket"
 
-  def props(oauthConfig: Option[OauthConfig]) = Props(classOf[WebSocketServer], oauthConfig)
+  def props(authorization: Authorization) = Props(classOf[WebSocketServer], authorization)
 }
 
 final case class Push(msg: String)

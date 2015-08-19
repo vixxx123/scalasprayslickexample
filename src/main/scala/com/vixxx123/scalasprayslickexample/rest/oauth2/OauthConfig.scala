@@ -8,4 +8,4 @@ package com.vixxx123.scalasprayslickexample.rest.oauth2
 import com.vixxx123.scalasprayslickexample.rest.Api
 import com.vixxx123.scalasprayslickexample.rest.oauth2.provider.AuthorizationProvider
 
-case class OauthConfig(oauthApi: Api, authorizationProvider: AuthorizationProvider)
+case class OauthConfig(authorizationProvider: AuthorizationProvider)

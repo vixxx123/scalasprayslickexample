@@ -9,7 +9,7 @@ import akka.actor.ActorContext
 import akka.routing.RoundRobinPool
 import com.vixxx123.scalasprayslickexample.entity.JsonNotation
 import com.vixxx123.scalasprayslickexample.logger.Logging
-import com.vixxx123.scalasprayslickexample.rest.auth.Authorization
+import com.vixxx123.scalasprayslickexample.rest.auth.{RestApiUser, Authorization}
 import com.vixxx123.scalasprayslickexample.rest.{BaseResourceApi, Api}
 import spray.httpx.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
@@ -36,7 +36,9 @@ class PersonApi(val actorContext: ActorContext, personDao: PersonDao, override v
     super.init()
   }
 
-  override def route() =
+  override def authorisedResource = false
+
+  override def route(implicit restApiUser: RestApiUser) =
     pathPrefix(ResourceName) {
       pathEnd {
         get {

@@ -12,7 +12,7 @@ import com.vixxx123.scalasprayslickexample.util.TokenUtil
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.lifted.TableQuery
 
-class MysqlAuthorizationProvider(authUserDao: OauthUserDao) extends AuthorizationProvider with DatabaseAccess{
+class MysqlAuthorizationProvider() extends AuthorizationProvider with DatabaseAccess{
 
   override def login(userToLogin: OauthUser): Option[OauthUser] = {
     val password = TokenUtil.sha1(userToLogin.password.toCharArray.map{_.toByte})

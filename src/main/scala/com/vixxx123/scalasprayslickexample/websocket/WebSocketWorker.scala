@@ -12,7 +12,7 @@ import akka.pattern.ask
 import akka.actor.{ActorRefFactory, Props, ActorRef}
 import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.logger.Logging
-import com.vixxx123.scalasprayslickexample.rest.auth.Authorization
+import com.vixxx123.scalasprayslickexample.rest.auth.{NoAuthorisation, Authorization}
 import com.vixxx123.scalasprayslickexample.rest.oauth2._
 import com.vixxx123.scalasprayslickexample.rest.oauth2.session.{SessionService, GetSession, Session}
 import spray.can.websocket
@@ -37,21 +37,23 @@ class WebSocketWorker(val serverConnection: ActorRef, authorization: Authorizati
 
   def auth: Receive = {
 
-
-    case req: HttpRequest if oauthConfig.isDefined && !req.headers.exists(header => header.name.equals("Authorization")) =>
+    case req: HttpRequest if authorization.isInstanceOf[OauthAuthorization] && !OauthRequestParser.tokenExists(req) =>
       L.debug("Unauthorized: header are missing")
       sender() ! HttpResponse(StatusCodes.Unauthorized)
 
-    case req: HttpRequest if oauthConfig.isDefined && !authorized(req.headers.filter(header => header.name.equals("Authorization")).head.value) =>
+    case req: HttpRequest if authorization.isInstanceOf[OauthAuthorization] && OauthRequestParser.tokenExists(req) &&
+      authorized(OauthRequestParser.getToken(req))=>
+
+      L.debug("Unauthorized: login failed!")
       sender() ! HttpResponse(StatusCodes.Unauthorized)
+
   }
 
   private def authorized(token: String): Boolean = {
-    val authKey = token.split(" ")
     implicit val timeout = Timeout(1, TimeUnit.SECONDS)
     implicit val ec = context.dispatcher
 
-    user = Await.result((SessionService.getSessionManager ? new GetSession(authKey(1))).recover{case e: Exception => None}.mapTo[Option[Session]].map {
+    user = Await.result((SessionService.getSessionManager ? new GetSession(token)).recover{case e: Exception => None}.mapTo[Option[Session]].map {
       case Some(res) => Some(res.user)
       case None => None
     }, timeout.duration)
@@ -71,7 +73,7 @@ class WebSocketWorker(val serverConnection: ActorRef, authorization: Authorizati
     case PushToUser(authUser, msg) =>
       user match {
         case Some(usr) =>
-          if (authUser == usr.getId)
+          if (authorization == NoAuthorisation || authUser.id.get == usr.getId)
             send(TextFrame(msg))
         case None =>
 

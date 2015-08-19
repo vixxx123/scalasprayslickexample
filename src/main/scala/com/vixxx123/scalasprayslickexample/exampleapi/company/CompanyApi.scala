@@ -9,7 +9,7 @@ import akka.actor.ActorContext
 import akka.routing.RoundRobinPool
 import com.vixxx123.scalasprayslickexample.entity.JsonNotation
 import com.vixxx123.scalasprayslickexample.logger.Logging
-import com.vixxx123.scalasprayslickexample.rest.auth.Authorization
+import com.vixxx123.scalasprayslickexample.rest.auth.{RestApiUser, Authorization}
 import com.vixxx123.scalasprayslickexample.rest.{Api, BaseResourceApi}
 import spray.httpx.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
@@ -43,43 +43,42 @@ class CompanyApi(val actorContext: ActorContext, companyDao: CompanyDao, overrid
     super.init()
   }
 
-  override def route() =
+  override def authorisedResource = true
+
+  override def route(implicit userAuth: RestApiUser) = {
     pathPrefix(ResourceName) {
-      auth {
-        implicit userAuth => {
+      pathEnd {
+        get {
+          ctx => companyGetHandler ! GetMessage(ctx, None)
+        } ~
+          post {
+            entity(as[Company]) {
+              company =>
+                ctx => companyCreateHandler ! CreateMessage(ctx, company)
+            }
+          }
+      } ~
+      pathPrefix(IntNumber) {
+        entityId => {
           pathEnd {
             get {
-              ctx => companyGetHandler ! GetMessage(ctx, None)
-            } ~
-              post {
-                entity(as[Company]) {
-                  company =>
-                    ctx => companyCreateHandler ! CreateMessage(ctx, company)
-                }
+              ctx => companyGetHandler ! GetMessage(ctx, Some(entityId))
+            } ~ put {
+              entity(as[Company]) { entity =>
+                ctx => companyPutHandler ! PutMessage(ctx, entity.copy(id = Some(entityId)))
               }
-          } ~
-          pathPrefix(IntNumber) {
-            entityId => {
-              pathEnd {
-                get {
-                  ctx => companyGetHandler ! GetMessage(ctx, Some(entityId))
-                } ~ put {
-                  entity(as[Company]) { entity =>
-                    ctx => companyPutHandler ! PutMessage(ctx, entity.copy(id = Some(entityId)))
-                  }
-                } ~ delete {
-                  ctx => companyDeleteHandler ! DeleteMessage(ctx, entityId)
-                } ~ patch {
-                  entity(as[List[JsonNotation]]) { patch =>
-                    ctx => companyPutHandler ! PatchMessage(ctx, patch, entityId)
-                  }
-                }
+            } ~ delete {
+              ctx => companyDeleteHandler ! DeleteMessage(ctx, entityId)
+            } ~ patch {
+              entity(as[List[JsonNotation]]) { patch =>
+                ctx => companyPutHandler ! PatchMessage(ctx, patch, entityId)
               }
             }
           }
         }
       }
     }
+  }
 
 }
 

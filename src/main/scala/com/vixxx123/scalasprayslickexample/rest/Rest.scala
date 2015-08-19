@@ -10,6 +10,7 @@ import akka.actor.{ActorSystem, PoisonPill}
 import akka.io.IO
 import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.logger.{BaseLogger, Logger}
+import com.vixxx123.scalasprayslickexample.rest.auth.{NoAuthorisation, Authorization}
 import com.vixxx123.scalasprayslickexample.rest.oauth2.OauthConfig
 import com.vixxx123.scalasprayslickexample.rest.oauth2.session.SessionService
 import com.vixxx123.scalasprayslickexample.websocket.WebSocketServer
@@ -18,14 +19,9 @@ import spray.can.server.UHttp
 
 import scala.concurrent.duration._
 
-class Rest(actorSystem: ActorSystem, listOfApis: List[Api], loggers: List[BaseLogger],
-           oauthConfig: Option[OauthConfig]  = None) {
+class Rest(actorSystem: ActorSystem, listOfApis: List[Api], loggers: List[BaseLogger], authorization: Authorization = NoAuthorisation) {
   // we need an ActorSystem to host our application in
   implicit val system = actorSystem
-
-  def withOauth(oauthConfig: OauthConfig) = {
-    new Rest(actorSystem, listOfApis, loggers, Some(oauthConfig))
-  }
 
   def start(): Unit = {
 
@@ -33,19 +29,18 @@ class Rest(actorSystem: ActorSystem, listOfApis: List[Api], loggers: List[BaseLo
     // start up logger actor system and logger actor
     Logger.LoggingActorSystem.actorOf(Logger.props(loggers), Logger.LoggerActorName)
 
+    authorization.init()
 
     // start up API service actor
-
-    val apis = oauthConfig match {
-      case Some(config) =>
-        SessionService.init(config.authorizationProvider)
-        listOfApis :+ config.oauthApi
-
+    val apis = authorization.getAuthApi match {
+      case Some(api) =>
+        listOfApis :+ api
       case None => listOfApis
     }
 
-    val service = system.actorOf(ApiService.props(apis), ApiService.ActorName)
-    val server = system.actorOf(WebSocketServer.props(oauthConfig), WebSocketServer.Name)
+
+    val service = system.actorOf(ApiService.props(apis, authorization), ApiService.ActorName)
+    val server = system.actorOf(WebSocketServer.props(authorization), WebSocketServer.Name)
 
 
     println("Websocket is starting...")

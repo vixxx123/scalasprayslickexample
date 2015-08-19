@@ -11,7 +11,7 @@ import akka.pattern.ask
 import akka.actor.{ActorRef, ActorContext}
 import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.logger.Logging
-import com.vixxx123.scalasprayslickexample.rest.auth.Authorization
+import com.vixxx123.scalasprayslickexample.rest.auth.{RestApiUser, Authorization}
 import com.vixxx123.scalasprayslickexample.rest.oauth2.session._
 import com.vixxx123.scalasprayslickexample.rest.{Api, BaseResourceApi}
 import spray.http.{StatusCodes, FormData}
@@ -42,7 +42,9 @@ class OauthApi(val actorContext: ActorContext, sessionManager: ActorRef, authUse
     super.init()
   }
 
-  override def route() =
+  override def authorisedResource = false
+
+  override def route(implicit restApiUser: RestApiUser) =
     pathPrefix(ResourceName) {
       pathEnd {
         post {

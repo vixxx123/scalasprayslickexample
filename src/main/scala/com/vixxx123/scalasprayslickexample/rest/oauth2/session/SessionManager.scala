@@ -8,7 +8,7 @@ package com.vixxx123.scalasprayslickexample.rest.oauth2.session
 
 import akka.actor.Status.Failure
 import akka.actor.{Actor, ActorRef, Props}
-import com.vixxx123.scalasprayslickexample.rest.oauth2.Token
+import com.vixxx123.scalasprayslickexample.rest.oauth2.{OauthUser, Token}
 import com.vixxx123.scalasprayslickexample.rest.oauth2.provider.AuthorizationProvider
 import com.vixxx123.scalasprayslickexample.util.TokenUtil
 

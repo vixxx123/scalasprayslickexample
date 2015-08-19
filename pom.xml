@@ -10,7 +10,7 @@
     <version>0.1.0</version>
     <name>scalasprayslickexample</name>
     <organization>
-        <name>com.vixxx123</name>
+        <name>Wiktor Tychulski</name>
     </organization>
     <url>http://github.com/vixxx123/scalasprayslickexample</url>
 
@@ -21,9 +21,11 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
     <scm>
-        <url>git@github.com:vixxx123/scalasprayslickexample.git</url>
-        <connection>scm:git:git@github.com:vixxx123/scalasprayslickexample.gitt</connection>
+        <url>https://github.com/vixxx123/scalasprayslickexample</url>
+        <connection>scm:git:git://github.com/vixxx123/scalasprayslickexample.git</connection>
+        <developerConnection>scm:git:git@github.com:vixxx123/scalasprayslickexample.git</developerConnection>
     </scm>
 
     <developers>

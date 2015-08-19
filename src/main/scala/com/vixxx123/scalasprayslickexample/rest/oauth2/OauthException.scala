@@ -17,12 +17,27 @@ class IncorrectAuthenticationHeaderException(cause: Exception)
 }
 
 class AuthHeaderIsMissingException(cause: Exception)
-  extends OauthException(OauthException.IncorrectAuthenticationHeader, cause) {
+  extends OauthException(OauthException.AuthHeaderIsMissing, cause) {
 
   def this() = this(null)
 }
 
+class TokenIsMissingException(cause: Exception)
+  extends OauthException(OauthException.TokenIsMissing, cause) {
+
+  def this() = this(null)
+}
+
+class UnknownTokenTypeException(cause: Exception)
+  extends OauthException(OauthException.UnknownTokenType, cause) {
+
+  def this() = this(null)
+}
+
+
 object OauthException {
   val AuthHeaderIsMissing = "Header with token is missing"
+  val TokenIsMissing = "Token is missing"
   val IncorrectAuthenticationHeader = "Incorrect structure of Authentication header"
+  val UnknownTokenType = "Unknown token type"
 }

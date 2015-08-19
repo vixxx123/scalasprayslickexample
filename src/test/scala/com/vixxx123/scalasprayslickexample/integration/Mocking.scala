@@ -34,10 +34,10 @@ trait Mocking extends MockitoSugar {
     }
   })
 
-  when(oauthApi.create(any(classOf[ActorContext]))).thenAnswer(new Answer[OauthApi] {
+  when(oauthApi.create(any(classOf[ActorContext]), any(classOf[Authorization]))).thenAnswer(new Answer[OauthApi] {
     override def answer(invocationOnMock: InvocationOnMock): OauthApi = {
       val args = invocationOnMock.getArguments
-      new OauthApi(args(0).asInstanceOf[ActorContext], SessionService.getSessionManager, oauthDao)
+      new OauthApi(args(0).asInstanceOf[ActorContext], SessionService.getSessionManager, oauthDao, NoAuthorisation)
     }
   })
 

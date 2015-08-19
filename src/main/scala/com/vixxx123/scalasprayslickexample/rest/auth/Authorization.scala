@@ -5,12 +5,18 @@
  */
 package com.vixxx123.scalasprayslickexample.rest.auth
 
+import akka.actor.ActorSystem
+import com.vixxx123.scalasprayslickexample.rest.Api
 import spray.routing.authentication._
 import spray.routing.RequestContext
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait Authorization {
+
+  def init()(implicit actorSystem: ActorSystem)
+
+  def getAuthApi: Option[Api]
 
   def authFunction(implicit executionContext: ExecutionContext): (RequestContext) => Future[Authentication[RestApiUser]]
 
@@ -19,6 +25,10 @@ trait Authorization {
 
 
 object NoAuthorisation extends Authorization {
+
+  override def init()(implicit actorSystem: ActorSystem) {}
+
+  override def getAuthApi: Option[Api] = None
 
   override def authFunction(implicit executionContext: ExecutionContext) = {
     context =>

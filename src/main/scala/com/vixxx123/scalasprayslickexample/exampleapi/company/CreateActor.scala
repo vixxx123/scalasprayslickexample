@@ -31,7 +31,6 @@ class CreateActor(companyDao: CompanyDao) extends Actor with Logging with Publis
         val added = company.copy(id = Some(companyDao.create(company)))
         ctx.complete(added)
         publishAll(CreatePublishMessage(ResourceName, entityUri(getRequestUri(ctx), added), added))
-        publishToUser(cm.loggedUser, CreatePublishMessage(ResourceName, entityUri(getRequestUri(ctx), added), added))
         L.debug(s"Company create success")
       } catch {
         case e: Exception =>
