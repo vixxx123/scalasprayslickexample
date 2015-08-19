@@ -11,11 +11,11 @@ import java.util.concurrent.TimeUnit
 import akka.actor.ActorSystem
 import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.database.DatabaseAccess
-import com.vixxx123.scalasprayslickexample.exampleapi.company._
+import com.vixxx123.scalasprayslickexample.example.api.company._
 import com.vixxx123.scalasprayslickexample.logger.ConsoleLogger
 import com.vixxx123.scalasprayslickexample.rest.Rest
 import com.vixxx123.scalasprayslickexample.rest.auth.NoAuthorisation
-import com.vixxx123.scalasprayslickexample.rest.oauth2.OauthConfig
+import com.vixxx123.scalasprayslickexample.example.auth.oauth2.OauthConfig
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfterAll, FlatSpec}

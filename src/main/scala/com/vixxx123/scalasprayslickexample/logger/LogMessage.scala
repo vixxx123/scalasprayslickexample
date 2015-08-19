@@ -5,7 +5,14 @@
  */
 package com.vixxx123.scalasprayslickexample.logger
 
-sealed class LogMessage(val msg: String, val tag: String, logType: LogLevel)
+/**
+ * Log messages
+ *
+ * @param msg - message to be logged
+ * @param tag - tag
+ * @param logType - type of message
+ */
+private[logger] sealed class LogMessage(val msg: String, val tag: String, logType: LogLevel)
 
 case class Debug(override val msg: String, override val tag: String) extends LogMessage(msg, tag, DebugLevel)
 case class Info(override val msg: String, override val tag: String) extends LogMessage(msg, tag, InfoLevel)

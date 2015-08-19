@@ -16,7 +16,9 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
 import scala.reflect.ClassTag
 
-
+/**
+ * Json utils
+ */
 object JsonUtil {
 
   private val ErrorMessage = "Error during json parsing: "

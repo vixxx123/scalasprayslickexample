@@ -7,11 +7,11 @@
 package com.vixxx123.scalasprayslickexample.integration
 
 import akka.actor.ActorContext
-import com.vixxx123.scalasprayslickexample.exampleapi.company.{Company, CompanyApiBuilder, CompanyApi, CompanyDao}
+import com.vixxx123.scalasprayslickexample.example.api.company.{Company, CompanyApiBuilder, CompanyApi, CompanyDao}
 import com.vixxx123.scalasprayslickexample.rest.auth.{NoAuthorisation, Authorization}
-import com.vixxx123.scalasprayslickexample.rest.oauth2._
-import com.vixxx123.scalasprayslickexample.rest.oauth2.provider.MysqlAuthorizationProvider
-import com.vixxx123.scalasprayslickexample.rest.oauth2.session.SessionService
+import com.vixxx123.scalasprayslickexample.example.auth.oauth2._
+import com.vixxx123.scalasprayslickexample.example.auth.oauth2.provider.MysqlAuthorizationProvider
+import com.vixxx123.scalasprayslickexample.example.auth.oauth2.session.SessionService
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock

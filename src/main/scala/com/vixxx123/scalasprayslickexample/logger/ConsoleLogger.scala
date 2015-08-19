@@ -8,7 +8,10 @@ package com.vixxx123.scalasprayslickexample.logger
 import java.text.SimpleDateFormat
 import java.util.{TimeZone, Date}
 
-class ConsoleLogger extends BaseLogger {
+/**
+ * Console logger implementation
+ */
+class ConsoleLogger extends Logger {
 
   private val dateFormatter: SimpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
 //  dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"))

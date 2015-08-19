@@ -11,20 +11,41 @@ import akka.actor.ActorContext
 import com.vixxx123.scalasprayslickexample.rest.auth.RestApiUser
 import com.vixxx123.scalasprayslickexample.util.JsonUtil
 
+/**
+ * Allows to send push messages via websocket
+ */
 trait PublishWebSocket {
 
-  def publishAll(pubSubMsg: PublishMessage)(implicit context: ActorContext) = {
+  /**
+   * Pushes message to all open sockets
+   * @param messageToPush - message to be pushed
+   * @param context - akka actor context
+   */
+  def publishAll(messageToPush: PublishMessage)(implicit context: ActorContext) {
     val websocket = context.actorSelection(s"/user/websocket")
-    websocket ! Push(JsonUtil.serialize(pubSubMsg))
+    websocket ! Push(JsonUtil.serialize(messageToPush))
   }
 
-  def publishToUser(user: RestApiUser, pubSubMsg: PublishMessage)(implicit context: ActorContext) = {
+  /**
+   * Pushes message to specific user
+   *
+   * @param user - user to which message should be pushed
+   *
+   * @param messageToPush - message to be pushed
+   * @param context - akka actor context
+   */
+  def publishToUser(user: RestApiUser, messageToPush: PublishMessage)(implicit context: ActorContext) {
     val websocket = context.actorSelection(s"/user/websocket")
-    websocket ! PushToUser(user, JsonUtil.serialize(pubSubMsg))
+    websocket ! PushToUser(user, JsonUtil.serialize(messageToPush))
   }
 }
 
-sealed class PublishMessage(val operation: String)
+/**
+ * Base Push message
+ * @param messageType - type of message
+ */
+sealed abstract class PublishMessage(val messageType: String)
+
 case class RawTextPublishMessage(text: String) extends PublishMessage("raw")
 case class CreatePublishMessage(entityType: String, uri: String, createdEntity: Any) extends PublishMessage("create")
 case class UpdatePublishMessage(entityType: String, uri: String, updatedEntity: Any) extends PublishMessage("update")

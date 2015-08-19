@@ -8,6 +8,9 @@ package com.vixxx123.scalasprayslickexample.rest
 
 import spray.http.StatusCodes
 
+/**
+ * Base REST exceptions
+ */
 
 class RestException(val code: StatusCodes.ClientError, val msg: String) extends Exception(msg)
 

@@ -12,9 +12,9 @@ import akka.pattern.ask
 import akka.actor.{ActorRefFactory, Props, ActorRef}
 import akka.util.Timeout
 import com.vixxx123.scalasprayslickexample.logger.Logging
-import com.vixxx123.scalasprayslickexample.rest.auth.{NoAuthorisation, Authorization}
-import com.vixxx123.scalasprayslickexample.rest.oauth2._
-import com.vixxx123.scalasprayslickexample.rest.oauth2.session.{SessionService, GetSession, Session}
+import com.vixxx123.scalasprayslickexample.rest.auth.{RestApiUser, NoAuthorisation, Authorization}
+import com.vixxx123.scalasprayslickexample.example.auth.oauth2._
+import com.vixxx123.scalasprayslickexample.example.auth.oauth2.session.{SessionService, GetSession, Session}
 import spray.can.websocket
 import spray.can.websocket.FrameCommandFailed
 import spray.can.websocket.frame.TextFrame
@@ -31,7 +31,7 @@ object WebSocketWorker {
 class WebSocketWorker(val serverConnection: ActorRef, authorization: Authorization)
   extends HttpServiceActor with Logging with websocket.WebSocketServerWorker {
 
-  var user: Option[OauthUser] = None
+  var user: Option[RestApiUser] = None
 
   override def receive = auth orElse handshaking orElse businessLogicNoUpgrade orElse closeLogic
 
@@ -73,10 +73,10 @@ class WebSocketWorker(val serverConnection: ActorRef, authorization: Authorizati
     case PushToUser(authUser, msg) =>
       user match {
         case Some(usr) =>
-          if (authorization == NoAuthorisation || authUser.id.get == usr.getId)
+          if (authUser.id == usr.id)
             send(TextFrame(msg))
-        case None =>
-
+        case None if authorization == NoAuthorisation =>
+          send(TextFrame(msg))
       }
 
     case x: FrameCommandFailed =>

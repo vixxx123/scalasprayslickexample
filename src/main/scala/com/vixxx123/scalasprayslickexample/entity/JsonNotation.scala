@@ -7,7 +7,14 @@ package com.vixxx123.scalasprayslickexample.entity
 
 import com.vixxx123.scalasprayslickexample.rest.UpdateException
 
-case class JsonNotation(op: String, path: String, value: Option[String]){
+/**
+ * Represents patch operation object
+ *
+ * @param op
+ * @param path
+ * @param value
+ */
+case class JsonNotation(op: String, path: String, value: Option[String]) {
 
   def getSolidOperation: Operation = op match {
     case Operation.Replace => Replace

@@ -22,21 +22,21 @@ The database underneath is mysql, but it can be easily switch to any other which
 * Edit db.conf in resources to configure db connection
 
 ### Adding new REST API ###
-* take a look at com.vixxx123.scalasprayslickexample.exampleapi.person.PersonApi as example
+* take a look at com.vixxx123.scalasprayslickexample.example.api.person.PersonApi as example
 
 ```scala
-class CompanyApi(actorContext: ActorContext) extends BaseResourceApi with Logging {
+class CompanyApi(val actorContext: ActorContext, companyDao: CompanyDao, override val authorization: Authorization)
+  extends BaseResourceApi with Logging {
+
 
   /**
    * Handler val names must be unique in the system - all
    */
 
-  private val companyDao = new CompanyDao
-
   private val companyCreateHandler = actorContext.actorOf(RoundRobinPool(2).props(CreateActor.props(companyDao)), CreateActor.Name)
   private val companyPutHandler = actorContext.actorOf(RoundRobinPool(5).props(UpdateActor.props(companyDao)), UpdateActor.Name)
   private val companyGetHandler = actorContext.actorOf(RoundRobinPool(20).props(GetActor.props(companyDao)), GetActor.Name)
-  private val companyDeleteHandler = actorContext.actorOf(RoundRobinPool(20).props(DeleteActor.props(companyDao)), DeleteActor.Name)
+  private val companyDeleteHandler = actorContext.actorOf(RoundRobinPool(2).props(DeleteActor.props(companyDao)), DeleteActor.Name)
 
   override val logTag: String = getClass.getName
 
@@ -45,20 +45,22 @@ class CompanyApi(actorContext: ActorContext) extends BaseResourceApi with Loggin
     super.init()
   }
 
-  override def route() =
+  override def authorisedResource = true
+
+  override def route(implicit userAuth: RestApiUser) = {
     pathPrefix(ResourceName) {
       pathEnd {
         get {
           ctx => companyGetHandler ! GetMessage(ctx, None)
         } ~
-        post {
-          entity(as[Company]) {
-            user =>
-              ctx => companyCreateHandler ! CreateMessage(ctx, user)
+          post {
+            entity(as[Company]) {
+              company =>
+                ctx => companyCreateHandler ! CreateMessage(ctx, company)
+            }
           }
-        }
       } ~
-      pathPrefix (IntNumber){
+      pathPrefix(IntNumber) {
         entityId => {
           pathEnd {
             get {
@@ -70,16 +72,22 @@ class CompanyApi(actorContext: ActorContext) extends BaseResourceApi with Loggin
             } ~ delete {
               ctx => companyDeleteHandler ! DeleteMessage(ctx, entityId)
             } ~ patch {
-              ctx => companyPutHandler ! PatchMessage(ctx, entityId)
+              entity(as[List[JsonNotation]]) { patch =>
+                ctx => companyPutHandler ! PatchMessage(ctx, patch, entityId)
+              }
             }
           }
         }
       }
     }
+  }
+
 }
 
-object CompanyApi extends Api{
-  override def create(actorContext: ActorContext): BaseResourceApi = new CompanyApi(actorContext)
+class CompanyApiBuilder extends Api{
+  override def create(actorContext: ActorContext, authorization: Authorization): BaseResourceApi = {
+    new CompanyApi(actorContext, new CompanyDao, authorization)
+  }
 }
 
 ```
@@ -87,12 +95,13 @@ object CompanyApi extends Api{
 * create new routing class - which inherits from BaseResourceApi
     - method init should be used to initialize resource. It is run once on server start up. I use it to create db tables if they don't exists yet
     - method route - should define REST route for new API
+    - method authorisedResource - states if authorization should be turn on/off for this resource 
 * create new object/class which inherits from
     - create method should return new routing class (created in previous step)
-* in RestExampleApi object add your Api class to list.
+* in RestExampleApp object add your Api class to list.
 
 ```scala
-object RestExampleApp extends App{
+object RestExampleApp extends App {
   new Rest(ActorSystem("on-spray-can"), List(PersonApi, CompanyApi), List(new ConsoleLogger))
 }
 ```
@@ -107,15 +116,14 @@ it is possible to handle request inline and no additional actors are needed.
 * Each type of resource and method can have different numbers of actors - easy to optimise performance
 * Fully based on Akka
 * Uses Slick for persistence - easy to switch between databases (at least it should be easy :) )
-* Push messaging via websocket
-
-### Road map ###
-* Adding OAuth 2
-* Publishing message via websocket to specific user only (based on open session and user id)
+* Push messaging via websocket to all open connections or to specific user
+* Authorization with simplest(client_credentials) OAuth 2 implementation
 
 ### How to run ###
 * mvn clean install
 * mvn scala:run -DmainClass=com.vixxx123.scalasprayslickexample.RestExampleApp
 
+### to do ### 
+* configuration of logging levels
 
 ### Have fun ###

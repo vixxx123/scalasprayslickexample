@@ -14,7 +14,7 @@ import scala.slick.jdbc.{StaticQuery => Q}
 import scala.slick.jdbc.meta.MTable
 
 
-class BaseDbEntity[T <: BaseEntity, R <: BaseT[T]](val tableName: String, val tableQuery: TableQuery[R]) extends DatabaseAccess{
+class BaseDbEntity[T <: BaseEntity, R <: BaseT[T]](val tableName: String, val tableQuery: TableQuery[R]) extends DatabaseAccess {
 
   val createReturningId = tableQuery returning tableQuery.map{item => item.id}
 

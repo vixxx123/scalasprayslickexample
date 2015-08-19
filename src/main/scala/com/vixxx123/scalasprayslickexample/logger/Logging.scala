@@ -7,7 +7,7 @@ package com.vixxx123.scalasprayslickexample.logger
 
 trait Logging {
 
-  private val logger = Logger.LoggingActorSystem.actorSelection(s"/user/${Logger.LoggerActorName}")
+  private val logger = LoggingService.getLoggingService
   val logTag: String
 
 

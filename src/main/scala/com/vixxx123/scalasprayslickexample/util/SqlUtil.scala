@@ -9,7 +9,9 @@ package com.vixxx123.scalasprayslickexample.util
 import com.vixxx123.scalasprayslickexample.entity.{Remove, Replace, JsonNotation}
 import com.vixxx123.scalasprayslickexample.rest.UpdateException
 
-
+/**
+ * Sql utils
+ */
 object SqlUtil {
 
   def patch2updateStatement(table: String, patch: JsonNotation): String = {

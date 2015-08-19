@@ -9,17 +9,27 @@ package com.vixxx123.scalasprayslickexample.rest
 import akka.actor.{ActorSystem, PoisonPill}
 import akka.io.IO
 import akka.util.Timeout
-import com.vixxx123.scalasprayslickexample.logger.{BaseLogger, Logger}
+import com.vixxx123.scalasprayslickexample.logger.{Logger, LoggingService}
 import com.vixxx123.scalasprayslickexample.rest.auth.{NoAuthorisation, Authorization}
-import com.vixxx123.scalasprayslickexample.rest.oauth2.OauthConfig
-import com.vixxx123.scalasprayslickexample.rest.oauth2.session.SessionService
 import com.vixxx123.scalasprayslickexample.websocket.WebSocketServer
 import spray.can.Http
 import spray.can.server.UHttp
 
 import scala.concurrent.duration._
 
-class Rest(actorSystem: ActorSystem, listOfApis: List[Api], loggers: List[BaseLogger], authorization: Authorization = NoAuthorisation) {
+/**
+ * Rest service main class
+ *
+ * run start method on this obejct in order to start it up
+ *
+ * @param actorSystem - actor system in which rest service will be placed
+ * @param listOfResourceApiBuilders - list of BaseResourceBuilder
+ * @param loggers - list of loggers
+ * @param authorization - authorisation method - default: NoAuthorisation
+ */
+class Rest(actorSystem: ActorSystem, listOfResourceApiBuilders: List[BaseResourceBuilder], loggers: List[Logger],
+           authorization: Authorization = NoAuthorisation) {
+
   // we need an ActorSystem to host our application in
   implicit val system = actorSystem
 
@@ -27,15 +37,15 @@ class Rest(actorSystem: ActorSystem, listOfApis: List[Api], loggers: List[BaseLo
 
     println("Starting up...")
     // start up logger actor system and logger actor
-    Logger.LoggingActorSystem.actorOf(Logger.props(loggers), Logger.LoggerActorName)
+    LoggingService.init(loggers)
 
     authorization.init()
 
     // start up API service actor
-    val apis = authorization.getAuthApi match {
-      case Some(api) =>
-        listOfApis :+ api
-      case None => listOfApis
+    val apis = authorization.getAuthApiBuilder match {
+      case Some(authResourceBuilder) =>
+        listOfResourceApiBuilders :+ authResourceBuilder
+      case None => listOfResourceApiBuilders
     }
 
 
@@ -58,7 +68,6 @@ class Rest(actorSystem: ActorSystem, listOfApis: List[Api], loggers: List[BaseLo
 
   def stop(): Unit = {
     println("Shouting down...")
-    Logger.shutdown()
     system.shutdown()
     system.awaitTermination()
   }

@@ -10,6 +10,9 @@ import com.vixxx123.scalasprayslickexample.logger.Logging
 import spray.routing.ExceptionHandler
 import spray.util.LoggingContext
 
+/**
+ * Rest exception handler
+ */
 class RestExceptionHandler extends Logging {
 
   override val logTag = getClass.getName
