@@ -7,7 +7,7 @@
     <groupId>com.vixxx123</groupId>
     <artifactId>scalasprayslickexample_2.11</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.0</version>
+    <version>1.0.0</version>
     <name>scalasprayslickexample</name>
     <organization>
         <name>Wiktor Tychulski</name>
