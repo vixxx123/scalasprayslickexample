@@ -9,6 +9,7 @@ import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationExceptio
 import com.vixxx123.scalasprayslickexample.entity._
 import com.vixxx123.scalasprayslickexample.rest.UpdateException
 import com.vixxx123.scalasprayslickexample.util.SqlUtil
+import scala.concurrent.ExecutionContext
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.jdbc.{StaticQuery => Q}
 import scala.slick.jdbc.meta.MTable
@@ -77,7 +78,7 @@ class BaseDbEntity[T <: BaseEntity, R <: BaseT[T]](val tableName: String, val ta
     }
   }
 
-  def initTable(): Unit = {
+  def initTable()(implicit ec: ExecutionContext): Unit = {
     connectionPool withSession {
       implicit session =>
         if (MTable.getTables(tableName).list.isEmpty) {

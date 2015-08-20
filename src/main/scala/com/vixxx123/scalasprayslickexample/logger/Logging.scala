@@ -7,7 +7,7 @@ package com.vixxx123.scalasprayslickexample.logger
 
 trait Logging {
 
-  private val logger = LoggingService.getLoggingService
+  private lazy val logger = LoggingService.getLoggingService
   val logTag: String
 
 
