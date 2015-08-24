@@ -12,6 +12,7 @@
     <organization>
         <name>Wiktor Tychulski</name>
     </organization>
+    <description>A library, which help build REST API based on scala\spray\slick with authorization and websocket support.</description>
     <url>http://github.com/vixxx123/scalasprayslickexample</url>
 
     <licenses>
@@ -40,7 +41,7 @@
     <properties>
         <scala.maven.plugin.version>3.2.0</scala.maven.plugin.version>
         <scala.version.major>2.11</scala.version.major>
-        <scala.version>${scala.version.major}.5</scala.version>
+        <scala.version>${scala.version.major}.7</scala.version>
         <akka.version>2.3.7</akka.version>
         <jackson.version>2.5.1</jackson.version>
         <mysql.version>5.1.34</mysql.version>
@@ -217,6 +218,20 @@
         <plugins>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
                 <version>${scala.maven.plugin.version}</version>
@@ -277,6 +292,39 @@
                         <include>**/*Spec.*</include>
                     </includes>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <minmemory>64m</minmemory>
+                    <maxmemory>2g</maxmemory>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
